@@ -14,12 +14,16 @@ using Nancy.ModelBinding;
 using JWT;
 using OHWebService.Authentication;
 //using OHWebService.Models;
+using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace OHWebService.Modules
 {
 	/// <summary>
 	/// Description of AuthModule.
 	/// </summary>
+    /// 
+    
 	public class AuthModule	: Nancy.NancyModule
 	{
 		private readonly string secretKey;

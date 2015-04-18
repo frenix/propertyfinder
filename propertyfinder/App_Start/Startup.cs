@@ -16,8 +16,9 @@ namespace propertyfinder
         {
             app
                 .UseCors(CorsOptions.AllowAll)
-	            .Use(typeof(JwtOwinAuth))
+                .Use(typeof(JwtOwinAuth))
                 .UseNancy();
+                //.UseStageMarker(PipelineStage.MapHandler);
         }
     }
 }
