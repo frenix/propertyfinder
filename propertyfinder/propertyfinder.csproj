@@ -117,12 +117,19 @@
     <Compile Include="src\Authentication\JWT.cs" />
     <Compile Include="src\Authentication\JwtOwinAuth.cs" />
     <Compile Include="src\Authentication\SendMail.cs" />
+    <Compile Include="src\Models\AgentModel.cs" />
+    <Compile Include="src\Models\PropertyModel.cs" />
+    <Compile Include="src\Modules\AgentContext.cs" />
+    <Compile Include="src\Modules\AgentModule.cs" />
     <Compile Include="src\Modules\AuthModule.cs" />
+    <Compile Include="src\Modules\CommonModule.cs" />
     <Compile Include="src\Modules\HomeModule.cs" />
+    <Compile Include="src\Modules\MsgBuilder.cs" />
+    <Compile Include="src\Modules\PetaPoco.cs" />
+    <Compile Include="src\Modules\PropertyContext.cs" />
+    <Compile Include="src\Modules\PropertyModule.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

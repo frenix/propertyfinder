@@ -5,6 +5,8 @@
  * Time: 8:44 PM
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
+ * Modified: return of LoginHandler()
+ * 
  */
 using System;
 using System.Collections.Generic;
@@ -13,23 +15,19 @@ using Nancy;
 using Nancy.ModelBinding;
 using JWT;
 using OHWebService.Authentication;
-//using OHWebService.Models;
-using System.Web.Http;
-using System.Web.Http.Cors;
+using OHWebService.Models;
 
 namespace OHWebService.Modules
 {
 	/// <summary>
 	/// Description of AuthModule.
 	/// </summary>
-    /// 
-    
 	public class AuthModule	: Nancy.NancyModule
 	{
 		private readonly string secretKey;
        // private readonly IUserService userService;
+       private string msgInfo = "Access granted!";
                
-        
         public AuthModule ()  : base ("/login")
         {
 
@@ -41,7 +39,7 @@ namespace OHWebService.Modules
         public dynamic LoginHandler(LoginRequest loginRequest)
         {
             if (IsValidUser (loginRequest.email, loginRequest.password)) {
-				//{ "userId", 101 }
+				
                 var payload = new Dictionary<string, object> {
                     { "email", loginRequest.email },
                     { "userId", GuidCreator.New() }
@@ -49,34 +47,64 @@ namespace OHWebService.Modules
 
                 var token = JsonWebToken.Encode (payload, secretKey, JwtHashAlgorithm.HS256);
 
-                return new JwtToken { Token = token };
-            } else {
-                return HttpStatusCode.Unauthorized;
+                return MsgBuilder.MsgJWTResponse(HttpStatusCode.OK, token, "OK", msgInfo);
+            } else {   
+               return MsgBuilder.MsgJWTResponse(HttpStatusCode.Unauthorized, "", "NG", msgInfo);
             }
         }
         
         private bool IsValidUser(string email, string pswd) 
 		{
-            //check expiry
+        	if (email.Length == 0 && pswd.Length == 0)
+        	{
+        		return false;
+        	}
+        	//check expiry
             //https://github.com/jchannon/Owin.StatelessAuth/blob/master/src/Owin.StatelessAuthExample/MySecureTokenValidator.cs
             // create a connection to the PetaPoco orm and try to fetch and object with the given Id
-            //AgentContext ctx = new AgentContext();
-            //AgentModel res = ctx.GetByEmailAddAndPwd(email, pswd);
-            //// a null return means no object found
-            //if (res == null) 
-            //{
-            //    return false;
-            //}
+			AgentContext ctx = new AgentContext();
+			AgentModel res = ctx.GetByEmailAddAndPwd(email, pswd);
+			// a null return means no object found
+			if (res == null) 
+			{
+				msgInfo = "This profile does not exists!";
+				return false;
+			} 
+			else
+			{
+				msgInfo = IsEmailExist(email, pswd);
+				return true;
+			}
 				
-			return true;
 		}
-    }
+        
+     	private string IsEmailExist(string email, string pswd) 
+		{
+        	if (email.Length == 0 && pswd.Length == 0)
+        	{
+        		return "Empty parameters";
+        	}
+        	
+            // create a connection to the PetaPoco orm and try to fetch and object with the given Id
+			AgentContext ctx = new AgentContext();
+			AgentModel res = ctx.GetEmail(email);
+			// a null return means no object found
+			if (res == null) 
+			{
+				return "Email does not exist";
+			} else {
+				if(res.Password != pswd) {
+					return "Password mismatch";
+				} else {
+					return "Email exists";
+				}
+			}
+				
+			
+		}
+    } //end of AuthModule 
 
 	
-    public class JwtToken
-    {
-        public string Token { get; set; }
-    }
 
     public class LoginRequest
     {
