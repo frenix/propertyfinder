@@ -64,7 +64,7 @@ namespace OHWebService.Modules
 
             // Replacing SQLite with SQL Server
             // define a standard SQL Server ADO connection string
-            String conStr = @"data source=36868ea8-9d81-4a8a-8c37-a47f001e52bd.sqlserver.sequelizer.com;initial catalog=db36868ea89d814a8a8c37a47f001e52bd;Trusted_Connection=yes;";
+            String conStr = @"data source=36868ea8-9d81-4a8a-8c37-a47f001e52bd.sqlserver.sequelizer.com;initial catalog=db36868ea89d814a8a8c37a47f001e52bd;User ID=skqfcfuwbugjihlz;Password=7iXtmk2me2XdTPKgAUwdf6C8rA42ezzsZPsM6hnFFCgnwUhvni3F3xXaMXbTq8gL;";
             // Add the SQL Server type to the constructor. PetaPoco will find the provider factory.
             PetaPoco.Database db = new PetaPoco.Database(conStr, "System.Data.SqlClient");
             return db;
