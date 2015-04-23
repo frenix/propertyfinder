@@ -72,17 +72,19 @@ namespace OHWebService.Modules
 			} 
 			else
 			{
-				msgInfo = IsEmailExist(email, pswd);
-				return true;
+				return IsEmailExist(email, pswd);
 			}
 				
 		}
         
-     	private string IsEmailExist(string email, string pswd) 
+     	private bool IsEmailExist(string email, string pswd) 
 		{
+            bool ret = false;
+
         	if (email.Length == 0 && pswd.Length == 0)
         	{
-        		return "Empty parameters";
+        		msgInfo = "Empty parameters";
+                return false;
         	}
         	
             // create a connection to the PetaPoco orm and try to fetch and object with the given Id
@@ -91,17 +93,21 @@ namespace OHWebService.Modules
 			// a null return means no object found
 			if (res == null) 
 			{
-				return "Email does not exist";
+				msgInfo = "Email does not exist";
+                ret = false;
 			} else {
 				if(res.Password != pswd) {
-					return "Password mismatch";
+					msgInfo = "Password mismatch";
+                    ret = false;
 				} else {
-					return "Email exists";
+					msgInfo = "Email exists";
+                    ret = true;
 				}
 			}
-				
-			
+
+            return ret;			
 		}
+
     } //end of AuthModule 
 
 	
