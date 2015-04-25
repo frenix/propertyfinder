@@ -54,14 +54,7 @@ namespace OHWebService.Modules
 		    return CommonModule.GetDatabase().FirstOrDefault<AgentModel>(sql,emailadd,pswd);
 		}
 		
-		public AgentModel GetEmail(string emailadd)
-		{
-		    //String sql = "select * from property_agent where EmailAddress ='" + emailadd + "' and Password='" + pswd +"'";
-		    String sql = "select * from property_agent where Password=@0";
-		    
-		    return CommonModule.GetDatabase().FirstOrDefault<AgentModel>(sql,emailadd);
-		}
-		
+			
 		
 		public void Add(AgentModel agent)
 		{

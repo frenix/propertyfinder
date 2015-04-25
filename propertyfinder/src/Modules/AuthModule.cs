@@ -72,12 +72,12 @@ namespace OHWebService.Modules
 			} 
 			else
 			{
-				return IsEmailExist(email, pswd);
+				return IsEmailExist(email, pswd, res);
 			}
 				
 		}
         
-     	private bool IsEmailExist(string email, string pswd) 
+     	private bool IsEmailExist(string email, string pswd, AgentModel agent) 
 		{
             bool ret = false;
 
@@ -87,16 +87,13 @@ namespace OHWebService.Modules
                 return false;
         	}
         	
-            // create a connection to the PetaPoco orm and try to fetch and object with the given Id
-			AgentContext ctx = new AgentContext();
-			AgentModel res = ctx.GetEmail(email);
 			// a null return means no object found
-			if (res == null) 
+			if (agent == null) 
 			{
 				msgInfo = "Email does not exist";
                 ret = false;
 			} else {
-				if(res.Password != pswd) {
+				if(agent.Password != pswd) {
 					msgInfo = "Password mismatch";
                     ret = false;
 				} else {
