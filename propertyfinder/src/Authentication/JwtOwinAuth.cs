@@ -28,8 +28,7 @@ namespace OHWebService.Authentication
             "/login",
             "/login/",
             "/agents",
-            "/agents/",
-            "/Agents"
+            "/agents/"
         };
 
         public JwtOwinAuth (AppFunc next)
@@ -44,7 +43,8 @@ namespace OHWebService.Authentication
             if (path == null) {
                 throw new ApplicationException ("Invalid OWIN request. Expected owin.RequestPath, but not present.");
             }
-            if (!exceptions.Contains(path)) {
+            //make all entry to lowercase
+            if (!exceptions.Contains(path.ToLower())) {
                 var headers = environment ["owin.RequestHeaders"] as IDictionary<string, string[]>;
                 if (headers == null) {
                     throw new ApplicationException ("Invalid OWIN request. Expected owin.RequestHeaders to be an IDictionary<string, string[]>.");
