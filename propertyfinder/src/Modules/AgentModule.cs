@@ -125,6 +125,8 @@ namespace OHWebService.Modules
 				profile.AuthKey = uuid.ToString();
 				//create fullname of the agent
 				fullName = profile.FirstName + " " + profile.LastName;
+                //Set ConfirmFlg to 0, this means user has not yet confirmed account via email
+                profile.ConfirmFlg = "0";
 				// Connect to the database
 				AgentContext ctx = new AgentContext();
 				ctx.Add(profile);
