@@ -63,7 +63,7 @@ namespace OHWebService.Modules
 			}
 			catch (Exception e)
 			{
-				return CommonModule.HandleException(e, String.Format("PropertyModule.GetAll()"), "NG", this.Request);
+				return CommonModule.HandleException(e, HttpStatusCode.OK, String.Format("PropertyModule.GetAll()"), "NG", this.Request);
 			}
 		}
 		
@@ -104,7 +104,7 @@ namespace OHWebService.Modules
 			{
 				Console.WriteLine(rawBody);
 				String operation = String.Format("PropertyModule.AddListing({0})", (listing == null) ? "No Model Data" : listing.Title);
-				return CommonModule.HandleException(e, operation, "NG", this.Request);
+				return CommonModule.HandleException(e, HttpStatusCode.OK, operation, "NG", this.Request);
 			}	
 		}
 		
@@ -133,7 +133,7 @@ namespace OHWebService.Modules
 			catch (Exception e)
 			{
 				String operation = String.Format("PropertyModule.UpdateListing({0})", (listing == null) ? "No Model Data" : listing.Title);
-				return CommonModule.HandleException(e, operation, "NG", this.Request);
+				return CommonModule.HandleException(e, HttpStatusCode.OK, operation, "NG", this.Request);
 			}
 		}
 		
@@ -156,7 +156,7 @@ namespace OHWebService.Modules
 			}
 			catch (Exception e)
 			{
-				return CommonModule.HandleException(e, String.Format("\nPropertyModule.Delete({0})", id), "NG", this.Request);
+				return CommonModule.HandleException(e, HttpStatusCode.OK, String.Format("\nPropertyModule.Delete({0})", id), "NG", this.Request);
 			}
 		}
 		

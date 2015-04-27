@@ -74,7 +74,7 @@ namespace OHWebService.Modules
 			// Please, please handle exceptions in a way that provides information about the context of the error.
 			catch (Exception e)
 			{
-				return CommonModule.HandleException(e, String.Format("AgentModule.GetById({0})", id), "NG", this.Request);
+				return CommonModule.HandleException(e, HttpStatusCode.OK,String.Format("AgentModule.GetById({0})", id), "NG", this.Request);
 			}
 		}
 		
@@ -92,7 +92,7 @@ namespace OHWebService.Modules
 			}
 			catch (Exception e)
 			{
-				return CommonModule.HandleException(e, String.Format("AgentModule.GetAll()"), "NG", this.Request);
+				return CommonModule.HandleException(e, HttpStatusCode.OK, String.Format("AgentModule.GetAll()"), "NG", this.Request);
 			}
 		}
 		
@@ -148,7 +148,7 @@ namespace OHWebService.Modules
 			{
 				Console.WriteLine(rawBody);
 				String operation = String.Format("AgentModule.AddAgent({0})", (profile == null) ? "No Model Data" : profile.EmailAddress);
-				return CommonModule.HandleException(e, operation, "NG", this.Request);
+				return CommonModule.HandleException(e, HttpStatusCode.OK, operation, "NG", this.Request);
 			}	
 			
 		}
@@ -173,7 +173,7 @@ namespace OHWebService.Modules
 			}
 			catch (Exception e)
 			{
-				return CommonModule.HandleException(e, String.Format("\nAgentModule.Delete({0})", id), "NG", this.Request);
+				return CommonModule.HandleException(e, HttpStatusCode.OK, String.Format("\nAgentModule.Delete({0})", id), "NG", this.Request);
 			}
 		}
 		
@@ -209,7 +209,7 @@ namespace OHWebService.Modules
 			catch (Exception e)
 			{
 				String operation = String.Format("AgentModule.UpdateAgentByToken({0})", (agentauthkey == null) ? "No Model Data" : agentauthkey.token);
-				return CommonModule.HandleException(e, operation,"NG",this.Request);
+				return CommonModule.HandleException(e, HttpStatusCode.OK, operation,"NG",this.Request);
 			}
 		}
 		
