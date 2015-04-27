@@ -44,7 +44,7 @@ namespace OHWebService.Modules
 			Post["/"] = parameter => { return this.AddAgent(); };
 			
 			// /agent        DELETE: {AgentId}
-			Delete["/{id}"] = parameter => { return this.DeleteAgent(parameter.id); };
+			Delete["/{authkey}"] = parameter => { return this.DeleteAgent(parameter.authkey); };
 			
 			// /agent/		PUT: Token JSON in body
 			Put["/"] = parameter => { return this.UpdateAgentByToken(); };
@@ -155,26 +155,26 @@ namespace OHWebService.Modules
 		}
 		
 		// DELETE /Agent/99
-		Nancy.Response DeleteAgent(int id)
+		Nancy.Response DeleteAgent(string authkey)
 		{
 			try
 			{
 				AgentContext ctx = new AgentContext();
-				AgentModel res = ctx.GetById(id);
+				AgentModel res = ctx.GetByToken(authkey);
 
 				if (res == null)
 				{
-					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "DELETE", HttpStatusCode.NotFound, "NG", String.Format("Agent with Id = {0} does not exist", id));
+					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "DELETE", HttpStatusCode.NotFound, "NG", String.Format("Agent with Id = {0} does not exist", authkey));
 				}
 				AgentModel ci = new AgentModel();
-				ci.AgentId = id;
+				ci.AuthKey = authkey;
 				ctx.delete(ci);
 				//return 204;
 				return MsgBuilder.MsgResponse(this.Request.Url.ToString(),"DELETE", HttpStatusCode.NoContent, "OK", String.Format("{0} deleted successfully!", res.EmailAddress));
 			}
 			catch (Exception e)
 			{
-				return CommonModule.HandleException(e, HttpStatusCode.OK, String.Format("\nAgentModule.Delete({0})", id), "NG", this.Request);
+				return CommonModule.HandleException(e, HttpStatusCode.OK, String.Format("\nAgentModule.Delete({0})", authkey), "NG", this.Request);
 			}
 		}
 		
