@@ -32,8 +32,10 @@ namespace OHWebService.Models
 		public String AuthKey { get; set; }
 		[PetaPoco.Column("ConfirmFlg")]
 		public String ConfirmFlg { get; set; }
-		[PetaPoco.Column("ProfPic")]
-		public String ProfPic { get; set; }
+		[PetaPoco.Column("ProfileFileName")]
+		public String ProfileFileName { get; set; }
+		[PetaPoco.Column("ProfileUrl")]
+		public String ProfileUrl { get; set; }
     }
 
 
