@@ -35,7 +35,7 @@ namespace OHWebService.Modules
             Post ["/"] = _ => LoginHandler(this.Bind<LoginRequest>());
 
             //PUT: Token JSON in body {"token":"XXXX"}
-            Put["/"] = param => { return this.LoginConfirmAcct(); };
+            Put["/"] = _ => LoginConfirmAcct(); 
             
         }
 
@@ -89,7 +89,7 @@ namespace OHWebService.Modules
                 agent.ConfirmFlg = "1"; //set flag to 1
                 ctx.update(agent);
                 // no content response
-                return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "PUT", HttpStatusCode.NoContent, "OK", "Update sucessfull!");
+                return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "PUT", HttpStatusCode.OK, "OK", "Update sucessfull!");
             }
             catch (Exception e)
             {
