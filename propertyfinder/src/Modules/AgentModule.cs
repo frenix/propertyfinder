@@ -167,7 +167,7 @@ namespace OHWebService.Modules
 					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "DELETE", HttpStatusCode.NotFound, "NG", String.Format("Agent with Id = {0} does not exist", authkey));
 				}
 				AgentModel ci = new AgentModel();
-				ci.AuthKey = authkey;
+				ci.AgentId = res.AgentId;
 				ctx.delete(ci);
 				//return 204;
 				return MsgBuilder.MsgResponse(this.Request.Url.ToString(),"DELETE", HttpStatusCode.NoContent, "OK", String.Format("{0} deleted successfully!", res.EmailAddress));
@@ -178,8 +178,7 @@ namespace OHWebService.Modules
 			}
 		}
 		
-		//PUT /agents/token
-		// used to update ConfirmFlg when user confirms email 
+		//PUT /agents
 		Nancy.Response UpdateAgentByToken()
 		{
 			// debug code only
@@ -202,8 +201,7 @@ namespace OHWebService.Modules
 				{
 					return 404;
 				}
-				// if agent is found by authkey, update it
-				agent.ConfirmFlg = "1"; //set flag to 1
+
 				ctx.update(agent);
 				return 204; // no content response
 			}
