@@ -19,6 +19,9 @@ using Nancy.Responses;
 using OHWebService.Models;
 using OHWebService.Authentication;
 
+using Newtonsoft.Json;
+using System.Web;
+
 namespace OHWebService.Modules
 {
 	/// <summary>
@@ -31,17 +34,24 @@ namespace OHWebService.Modules
                                 <h1>Agent Page </h1>
                                 </body></html>
                                 ";
-	    	    
-		public AgentModule() : base("/agents")
+	    	
+
+		
+		public AgentModule(IRootPathProvider pathProvider) : base("/agents")
 		{
 		    // /agent
 		    Get["/"] = parameter => { return GetAll(); };
+		    
+//		    Get["/upload"] = parameter => { return Upload(); };
 				
 			// /agent/99
 			Get["/{id}"] = parameter => { return GetById(parameter.id); };			
 							
 			// /agent       POST: Agent JSON in body
 			Post["/"] = parameter => { return this.AddAgent(); };
+			
+			
+			Post["/upload"] = parameter => { return this.ProcessRequest(pathProvider); };
 			
 			// /agent        DELETE: {AgentId}
 			Delete["/{authkey}"] = parameter => { return this.DeleteAgent(parameter.authkey); };
@@ -96,6 +106,63 @@ namespace OHWebService.Modules
 			}
 		}
 		
+		//Upload File (temp)
+//		private object Upload()
+//		{
+//		   var file = this.Request.Files.FirstOrDefault();
+//			IRootPathProvider pathProvider;
+//	
+//	        if (file != null)
+//	        {
+//	            var fileDetails = string.Format("{3} - {0} ({1}) {2}bytes", file.Name, file.ContentType, file.Value.Length, file.Key);
+//	            //user.FileDetails = fileDetails;
+//	            var filename = Path.Combine(pathProvider.GetRootPath(), "Images", 1 + ".jpeg");
+//	
+//	            using (var fileStream = new FileStream(filename, FileMode.Create))
+//	            {
+//	                file.Value.CopyTo(fileStream);
+//	            }
+//	            return HttpStatusCode.OK;
+//	        }
+//	        return HttpStatusCode.NotFound;
+        
+//		}
+
+	public dynamic ProcessRequest(IRootPathProvider pathProvider)
+        {
+	
+				string p = pathProvider.GetRootPath();
+				var file = this.Request.Files.FirstOrDefault();
+                //var userName = this.Request.Form["token"];
+                
+//                for (int i = 0; i < files.Value. .Value.; i++)
+//                {
+//                    HttpPostedFile file = files[i];
+//
+//                    string fname = context.Server.MapPath("Uploads\\" + userName.ToUpper() + "\\" + file.FileName);
+//                    file.SaveAs(fname);
+//                }
+//                
+				 var fileDetails = string.Format("{3} - {0} ({1}) {2}bytes", file.Name, file.ContentType, file.Value.Length, file.Key);
+                	
+                //var filename = Path.Combine(p, "App_Data", file.Name + ".jpeg");
+               	var filename = Path.Combine(p, "App_Data", file.Name);
+                
+             	using (var fileStream = new FileStream(filename, FileMode.Create))
+                {
+                    file.Value.CopyTo(fileStream);
+                }
+             	
+             	string urlFile = FileController.UploadFile(file.Name, filename);
+             	
+             	return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.OK, "OK", urlFile);
+        }
+	
+		
+		
+		
+		
+		
 		// POST /Agent
 		Nancy.Response AddAgent() 
 		{
@@ -127,6 +194,7 @@ namespace OHWebService.Modules
 				fullName = profile.FirstName + " " + profile.LastName;
                 //Set ConfirmFlg to 0, this means user has not yet confirmed account via email
                 profile.ConfirmFlg = "0";
+
 				// Connect to the database
 				AgentContext ctx = new AgentContext();
 				ctx.Add(profile);

@@ -40,6 +40,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CloudinaryDotNet">
+      <HintPath>..\packages\CloudinaryDotNet.1.0.21\lib\net40\CloudinaryDotNet.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Owin">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
@@ -123,13 +126,16 @@
     <Compile Include="src\Modules\AgentModule.cs" />
     <Compile Include="src\Modules\AuthModule.cs" />
     <Compile Include="src\Modules\CommonModule.cs" />
+    <Compile Include="src\Modules\FileController.cs" />
     <Compile Include="src\Modules\HomeModule.cs" />
     <Compile Include="src\Modules\MsgBuilder.cs" />
     <Compile Include="src\Modules\PetaPoco.cs" />
     <Compile Include="src\Modules\PropertyContext.cs" />
     <Compile Include="src\Modules\PropertyModule.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Data" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

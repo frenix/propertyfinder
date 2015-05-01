@@ -7,6 +7,7 @@
  * 
  */
 using System;
+using System.IO;
 
 namespace OHWebService.Models
 {
@@ -43,5 +44,9 @@ namespace OHWebService.Models
     {
 		public String token { get; set; }
     }
-
+	
+    public partial class AgentPicture
+    {
+    	public byte[] Picture { get; set; }
+    }
 }
