@@ -157,7 +157,7 @@ namespace OHWebService.Modules
                     file.Value.CopyTo(fileStream);
                 }
              	
-             	string urlFile = FileController.UploadFile(file.Name, filename);
+             	string urlFile = FileController.UploadFile(userName, filename);
              	
              	return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.OK, "OK", urlFile);
         }
