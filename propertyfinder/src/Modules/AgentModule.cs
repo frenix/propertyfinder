@@ -133,7 +133,11 @@ namespace OHWebService.Modules
 	
 				string p = pathProvider.GetRootPath();
 				var file = this.Request.Files.FirstOrDefault();
-                //var userName = this.Request.Form["token"];
+				if (file == null) 
+				{
+					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.BadRequest, "NG", "File is empty!");
+				}
+                var userName = this.Request.Form["username"];
                 
 //                for (int i = 0; i < files.Value. .Value.; i++)
 //                {
@@ -145,8 +149,8 @@ namespace OHWebService.Modules
 //                
 				 var fileDetails = string.Format("{3} - {0} ({1}) {2}bytes", file.Name, file.ContentType, file.Value.Length, file.Key);
                 	
-                //var filename = Path.Combine(p, "App_Data", file.Name + ".jpeg");
-               	var filename = Path.Combine(p, "App_Data", file.Name);
+                var filename = Path.Combine(p, "App_Data", userName + ".jpeg");
+               //var filename = Path.Combine(p, "~/App_Data", file.Name);
                 
              	using (var fileStream = new FileStream(filename, FileMode.Create))
                 {
