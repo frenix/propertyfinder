@@ -22,11 +22,14 @@ namespace OHWebService.Modules
             {
                 //File = new CloudinaryDotNet.Actions.FileDescription(@"c:\mypicture.jpg"),
                 File = new CloudinaryDotNet.Actions.FileDescription(@filepath),
-                PublicId = filename
+                Transformation = new Transformation().Width(1000).Height(1000).Crop("limit"),
+                PublicId = filename,
+                Overwrite = true,
+                Invalidate = true
             };
 
             CloudinaryDotNet.Actions.ImageUploadResult uploadResult = cloudinary.Upload(uploadParams);
-            string url = cloudinary.Api.UrlImgUp.BuildUrl(String.Format("{0}.{1}", uploadResult.PublicId, uploadResult.Format));
+            string url = cloudinary.Api.UrlImgUp.BuildUrl(String.Format("v{0}/{1}.{2}", uploadResult.Version, uploadResult.PublicId, uploadResult.Format));
             return url;
         }
     }

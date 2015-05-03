@@ -51,7 +51,7 @@ namespace OHWebService.Modules
 			Post["/"] = parameter => { return this.AddAgent(); };
 			
 			
-			Post["/upload"] = parameter => { return this.ProcessRequest(pathProvider); };
+			Post["/upload"] = parameter => { return this.UploadProfileImg(pathProvider); };
 			
 			// /agent        DELETE: {AgentId}
 			Delete["/{authkey}"] = parameter => { return this.DeleteAgent(parameter.authkey); };
@@ -128,7 +128,7 @@ namespace OHWebService.Modules
         
 //		}
 
-	public dynamic ProcessRequest(IRootPathProvider pathProvider)
+	public dynamic UploadProfileImg(IRootPathProvider pathProvider)
         {
 	
 				string p = pathProvider.GetRootPath();
@@ -138,6 +138,7 @@ namespace OHWebService.Modules
 					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.BadRequest, "NG", "File is empty!");
 				}
                 var userName = this.Request.Form["username"];
+                var emailAdd = this.Request.Form["email"];
                 
 //                for (int i = 0; i < files.Value. .Value.; i++)
 //                {
@@ -158,6 +159,19 @@ namespace OHWebService.Modules
                 }
              	
              	string urlFile = FileController.UploadFile(userName, filename);
+             	
+             	//need to update dbase with url of profilepic given the email add 
+         		AgentContext ctx = new AgentContext();
+				AgentModel agent = ctx.GetByEmailAdd(emailAdd);
+             	if (agent == null)
+				{
+					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.NotFound, "NG", String.Format("Agent with Email = {0} does not exist", emailAdd));
+				}
+             	
+             	agent.ProfileFileName = userName;
+             	agent.ProfileUrl = urlFile;
+             	
+             	ctx.update(agent);
              	
              	return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.OK, "OK", urlFile);
         }
@@ -204,18 +218,18 @@ namespace OHWebService.Modules
 				ctx.Add(profile);
 				
 				// 201 - created
-//				Nancy.Response response = new Nancy.Responses.JsonResponse<AgentModel>(profile, new DefaultJsonSerializer());
+				Nancy.Response response = new Nancy.Responses.JsonResponse<AgentModel>(profile, new DefaultJsonSerializer());
 //				response.StatusCode = HttpStatusCode.Created;
 //				// uri
 //				string uri = this.Request.Url.SiteBase + this.Request.Path + "/" + profile.EmailAddress;
 //				response.Headers["Location"] = uri;
 				
-				
+						
 				//send email for confirmation
 				// this is to update confirmedFlag in db
 				SendMail.Send(fullName , profile.EmailAddress, uuid.ToString());
-				//return response;
-				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.Created, "OK",  "Profile created successfully!");
+//				return response;
+				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.Created, "OK",  JsonConvert.SerializeObject(response)); //"Profile created successfully!"
 			}
 			catch (Exception e)
 			{
