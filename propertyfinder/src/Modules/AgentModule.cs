@@ -218,7 +218,7 @@ namespace OHWebService.Modules
 				ctx.Add(profile);
 				
 				// 201 - created
-				Nancy.Response response = new Nancy.Responses.JsonResponse<AgentModel>(profile, new DefaultJsonSerializer());
+//				Nancy.Response response = new Nancy.Responses.JsonResponse<AgentModel>(profile, new DefaultJsonSerializer());
 //				response.StatusCode = HttpStatusCode.Created;
 //				// uri
 //				string uri = this.Request.Url.SiteBase + this.Request.Path + "/" + profile.EmailAddress;
@@ -229,7 +229,7 @@ namespace OHWebService.Modules
 				// this is to update confirmedFlag in db
 				SendMail.Send(fullName , profile.EmailAddress, uuid.ToString());
 //				return response;
-				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.Created, "OK",  JsonConvert.SerializeObject(response)); //"Profile created successfully!"
+				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.Created, "OK",  "Profile created successfully!");	
 			}
 			catch (Exception e)
 			{

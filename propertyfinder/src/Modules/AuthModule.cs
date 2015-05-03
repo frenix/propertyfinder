@@ -16,6 +16,9 @@ using Nancy.ModelBinding;
 using JWT;
 using OHWebService.Authentication;
 using OHWebService.Models;
+using Nancy.Responses;
+
+using System.Web.Script.Serialization;
 
 namespace OHWebService.Modules
 {
@@ -54,7 +57,8 @@ namespace OHWebService.Modules
                 };
 
                 var token = JsonWebToken.Encode (payload, secretKey, JwtHashAlgorithm.HS256);
-
+				
+                
                 return MsgBuilder.MsgJWTResponse(HttpStatusCode.OK, token, "OK", msgInfo);
             } else {   
                return MsgBuilder.MsgJWTResponse(HttpStatusCode.Unauthorized, "", "NG", msgInfo);
@@ -88,6 +92,7 @@ namespace OHWebService.Modules
                 // if agent is found by authkey, update it
                 agent.ConfirmFlg = "1"; //set flag to 1
                 ctx.update(agent);
+                               
                 // no content response
                 return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "PUT", HttpStatusCode.OK, "OK", "Update sucessfull!");
             }
@@ -115,14 +120,14 @@ namespace OHWebService.Modules
             //https://github.com/jchannon/Owin.StatelessAuth/blob/master/src/Owin.StatelessAuthExample/MySecureTokenValidator.cs
             // create a connection to the PetaPoco orm and try to fetch and object with the given Id
 			AgentContext ctx = new AgentContext();
-			AgentModel res = ctx.GetByEmailAddAndPwd(email, pswd);
+			AgentModel agent = ctx.GetByEmailAddAndPwd(email, pswd);
 			// a null return means no object found
-			if (res == null) 
+			if (agent == null) 
 			{
 				msgInfo = "This profile does not exists!";
 				return false;
 			} 
-			else if (res.ConfirmFlg == "0")
+			else if (agent.ConfirmFlg == "0")
             {
                 //This user has not confirmed his account yet
                 msgInfo = "Account not confirmed! Please check your email and confirm this account.";
@@ -130,7 +135,7 @@ namespace OHWebService.Modules
             }
             else
 			{
-				return IsEmailExist(email, pswd, res);
+				return IsEmailExist(email, pswd, agent);
 			}
 				
 		}
@@ -145,6 +150,7 @@ namespace OHWebService.Modules
      	private bool IsEmailExist(string email, string pswd, AgentModel agent) 
 		{
             bool ret = false;
+            
 
         	if (email.Length == 0 && pswd.Length == 0)
         	{
@@ -158,11 +164,14 @@ namespace OHWebService.Modules
 				msgInfo = "Email does not exist";
                 ret = false;
 			} else {
+				
 				if(agent.Password != pswd) {
 					msgInfo = "Password mismatch";
                     ret = false;
 				} else {
-					msgInfo = "Email exists";
+					agent.Password = null;
+					var json = new JavaScriptSerializer().Serialize(agent);
+					msgInfo =json; //"Email exists";
                     ret = true;
 				}
 			}
