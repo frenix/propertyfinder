@@ -9,6 +9,7 @@
 using System;
 using Nancy;
 using Nancy.Responses;
+using OHWebService.Models;
 
 namespace OHWebService.Modules
 {
@@ -32,13 +33,14 @@ namespace OHWebService.Modules
 			return response;
 		}
 
-		public static Nancy.Response MsgJWTResponse(HttpStatusCode code, string token, string status, string msg)
+		public static Nancy.Response MsgJWTResponse(HttpStatusCode code, string token, string status, string msg, AgentModel agent)
 		{
 			JwtTokenMsg e = new JwtTokenMsg
 			{
 				Token = token,
 				Status = status,
-				Message = msg
+				Message = msg,
+                Agent = agent
 			};
 			// Build and return an object that the Nancy server knows about.
 			Nancy.Response response = new Nancy.Responses.JsonResponse<JwtTokenMsg>(e, new DefaultJsonSerializer());
@@ -57,10 +59,13 @@ namespace OHWebService.Modules
     }
     
     // useful info for Auth module
+    // this is a specific class for login module returning an agent data
+    // todo: revise so as not to use AgentModel
     public class JwtTokenMsg
     {
         public string Token { get; set; }
         public string Status { get; set; }
         public string Message { get; set; }
+        public AgentModel Agent { get; set; }
     }
 }

@@ -30,6 +30,7 @@ namespace OHWebService.Modules
 		private readonly string secretKey;
        // private readonly IUserService userService;
        private string msgInfo = "Access granted!";
+       private AgentModel profile;      //created a public class instead of the local agent object, this is for easy removal in the future
                
         public AuthModule ()  : base ("/login")
         {
@@ -59,9 +60,9 @@ namespace OHWebService.Modules
                 var token = JsonWebToken.Encode (payload, secretKey, JwtHashAlgorithm.HS256);
 				
                 
-                return MsgBuilder.MsgJWTResponse(HttpStatusCode.OK, token, "OK", msgInfo);
+                return MsgBuilder.MsgJWTResponse(HttpStatusCode.OK, token, "OK", msgInfo, profile);
             } else {   
-               return MsgBuilder.MsgJWTResponse(HttpStatusCode.Unauthorized, "", "NG", msgInfo);
+               return MsgBuilder.MsgJWTResponse(HttpStatusCode.Unauthorized, "", "NG", msgInfo, null);
             }
         }
         
@@ -170,8 +171,9 @@ namespace OHWebService.Modules
                     ret = false;
 				} else {
 					agent.Password = null;
-					var json = new JavaScriptSerializer().Serialize(agent);
-					msgInfo =json; //"Email exists";
+					//var json = new JavaScriptSerializer().Serialize(agent);
+					msgInfo ="Email exists";
+                    profile = agent;
                     ret = true;
 				}
 			}
