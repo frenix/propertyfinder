@@ -24,8 +24,8 @@ namespace OHWebService.Models
 		public String Title { get; set; }
 		[PetaPoco.Column("HouseType")]
 		public String HouseType { get; set; }
-		[PetaPoco.Column("PriceInThousand")]
-		public Decimal PriceInThousand { get; set; }
+		[PetaPoco.Column("Price")]
+		public String Price { get; set; }
 		[PetaPoco.Column("Description")]
 		public String Description { get; set; }
 		[PetaPoco.Column("Address")]
@@ -38,5 +38,7 @@ namespace OHWebService.Models
 		public Int32 SoldFlag { get; set; }
 		[PetaPoco.Column("AgentId")]
 		public Int64 AgentId { get; set; }  
+		[PetaPoco.Column("CreatedDate")]
+		public DateTime CreatedDate { get; set; }  
     }
 }

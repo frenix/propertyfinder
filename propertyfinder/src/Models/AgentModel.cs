@@ -15,7 +15,7 @@ namespace OHWebService.Models
     /// Class that defines Agent and map it to db
     /// </summary>
     
-    [PetaPoco.TableName("property_agent")]
+    [PetaPoco.TableName("PROPERTY_AGENT")]
 	[PetaPoco.PrimaryKey("AgentId")]
     public partial class AgentModel
     {
@@ -31,22 +31,19 @@ namespace OHWebService.Models
 		public String Password { get; set; }
 		[PetaPoco.Column("AuthKey")]
 		public String AuthKey { get; set; }
-		[PetaPoco.Column("ConfirmFlg")]
-		public String ConfirmFlg { get; set; }
 		[PetaPoco.Column("ProfileFileName")]
 		public String ProfileFileName { get; set; }
 		[PetaPoco.Column("ProfileUrl")]
 		public String ProfileUrl { get; set; }
+		[PetaPoco.Column("ConfirmFlag")]
+		public String ConfirmFlag { get; set; }
+		[PetaPoco.Column("Description")]
+		public String Description { get; set; }
     }
 
 
     public partial class AgentModelToken
     {
 		public String token { get; set; }
-    }
-	
-    public partial class AgentPicture
-    {
-    	public byte[] Picture { get; set; }
     }
 }

@@ -51,6 +51,7 @@ namespace OHWebService.Authentication
                 mail.Body += "</tr>";
 				
                 mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
                  
                 mail.Body += "<tr>";
                 mail.Body += "<td>You just signed up for Ownhome.com. Please follow this link to confirm that this is your e-mail address. </td>";
@@ -67,11 +68,19 @@ namespace OHWebService.Authentication
                 mail.Body += "</tr>";
                 
                 mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
                 
                 mail.Body += "<tr>";
                 mail.Body += "<td>The Ownhome Team </td>";
                 mail.Body += "</tr>";
                 
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                
+                 mail.Body += "<tr>";
+                mail.Body += "<td>Rest. Own. Stay. Enjoy! </td>";
+                mail.Body += "</tr>";
+                	
                 mail.Body += "</table>";
                 mail.Body += "</body>";
                 mail.Body += "</html>";

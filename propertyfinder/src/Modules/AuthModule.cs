@@ -91,7 +91,7 @@ namespace OHWebService.Modules
                     return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "PUT", HttpStatusCode.NotFound, "NG", "Account not found!");
                 }
                 // if agent is found by authkey, update it
-                agent.ConfirmFlg = "1"; //set flag to 1
+                agent.ConfirmFlag = "1"; //set flag to 1
                 ctx.update(agent);
                                
                 // no content response
@@ -128,7 +128,7 @@ namespace OHWebService.Modules
 				msgInfo = "This profile does not exists!";
 				return false;
 			} 
-			else if (agent.ConfirmFlg == "0")
+			else if (agent.ConfirmFlag == "0")
             {
                 //This user has not confirmed his account yet
                 msgInfo = "Account not confirmed! Please check your email and confirm this account.";

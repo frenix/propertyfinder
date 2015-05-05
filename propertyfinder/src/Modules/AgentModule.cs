@@ -138,7 +138,7 @@ namespace OHWebService.Modules
 					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.BadRequest, "NG", "File is empty!");
 				}
                 var userName = this.Request.Form["username"];
-                var emailAdd = this.Request.Form["email"];
+                var agentId = this.Request.Form["agentId"];
                 
 //                for (int i = 0; i < files.Value. .Value.; i++)
 //                {
@@ -162,10 +162,10 @@ namespace OHWebService.Modules
              	
              	//need to update dbase with url of profilepic given the email add 
          		AgentContext ctx = new AgentContext();
-				AgentModel agent = ctx.GetByEmailAdd(emailAdd);
+         		AgentModel agent = ctx.GetById(agentId);
              	if (agent == null)
 				{
-					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.NotFound, "NG", String.Format("Agent with Email = {0} does not exist", emailAdd));
+					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.NotFound, "NG", String.Format("Agent with username = {0} does not exist", userName));
 				}
              	
              	agent.ProfileFileName = userName;
@@ -211,7 +211,7 @@ namespace OHWebService.Modules
 				//create fullname of the agent
 				fullName = profile.FirstName + " " + profile.LastName;
                 //Set ConfirmFlg to 0, this means user has not yet confirmed account via email
-                profile.ConfirmFlg = "0";
+                profile.ConfirmFlag = "0";
 
 				// Connect to the database
 				AgentContext ctx = new AgentContext();
@@ -229,7 +229,7 @@ namespace OHWebService.Modules
 				// this is to update confirmedFlag in db
 				SendMail.Send(fullName , profile.EmailAddress, uuid.ToString());
 //				return response;
-				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.Created, "OK",  "Profile created successfully!");	
+				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.Created, "OK", profile.AgentId.ToString()); //  "Profile created successfully!");
 			}
 			catch (Exception e)
 			{
