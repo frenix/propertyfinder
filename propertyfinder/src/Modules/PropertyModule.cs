@@ -74,7 +74,7 @@ namespace OHWebService.Modules
 			}
 		}
 
-		private object GetAllListingById(int agentId)
+		Nancy.Response GetAllListingById(int agentId)
         {
             try
             {
@@ -93,8 +93,11 @@ namespace OHWebService.Modules
                     Property = listing,
                     Property_Images = listingImg
                 };
+				
+             	Nancy.Response response = new Nancy.Responses.JsonResponse<ListingResp>(resp, new DefaultJsonSerializer());
+				response.StatusCode = HttpStatusCode.OK;
+				return response;
 
-                return resp;
             }
             catch (Exception e)
             {

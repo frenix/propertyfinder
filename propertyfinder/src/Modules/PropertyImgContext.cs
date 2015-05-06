@@ -19,7 +19,7 @@ namespace OHWebService.Modules
         internal IList<PropertyImgModel> GetByListingId(int top, int from, string filter)
         {
             // TODO: acknowledge parameter values.
-            String sql = "select * from listing_images where (SoldFlag = 0 And AgentId=" + filter +" order by ImageId ";
+            String sql = "select * from listing_images where ListingId = " + filter +" order by ImageId";
             return CommonModule.GetDatabase().Query<PropertyImgModel>(sql).ToList();
         }
 
