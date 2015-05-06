@@ -132,6 +132,7 @@
     <Compile Include="src\Modules\MsgBuilder.cs" />
     <Compile Include="src\Modules\PetaPoco.cs" />
     <Compile Include="src\Modules\PropertyContext.cs" />
+    <Compile Include="src\Modules\PropertyImgContext.cs" />
     <Compile Include="src\Modules\PropertyModule.cs" />
   </ItemGroup>
   <ItemGroup>

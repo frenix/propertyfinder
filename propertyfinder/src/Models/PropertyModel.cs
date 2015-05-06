@@ -7,6 +7,7 @@
  * 
  */
 using System;
+using System.Collections.Generic;
 
 namespace OHWebService.Models
 {
@@ -40,5 +41,23 @@ namespace OHWebService.Models
 		public Int64 AgentId { get; set; }  
 		[PetaPoco.Column("CreatedDate")]
 		public DateTime CreatedDate { get; set; }  
+    }
+
+    [PetaPoco.TableName("listing_images")]
+    [PetaPoco.PrimaryKey("ImageId")]
+    public partial class PropertyImgModel
+    {
+        [PetaPoco.Column("ListingId")]
+        public Int64 ListingId { get; set; }
+        [PetaPoco.Column("Filename")]
+        public String Filename { get; set; }
+        [PetaPoco.Column("Url")]
+        public String Url { get; set; }
+    }
+
+    public class ListingResp
+    {
+        public PropertyModel Property { get; set; }
+        public IList<PropertyImgModel> Property_Images { get; set; }
     }
 }

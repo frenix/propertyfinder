@@ -78,7 +78,7 @@ namespace OHWebService.Authentication
                 mail.Body += "<tr><td></td></tr>";
                 
                  mail.Body += "<tr>";
-                mail.Body += "<td>Rest. Own. Stay. Enjoy! </td>";
+                mail.Body += "<td><i>Rent. Own. Stay. Enjoy! </i></td>";
                 mail.Body += "</tr>";
                 	
                 mail.Body += "</table>";

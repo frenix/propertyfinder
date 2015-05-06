@@ -33,13 +33,20 @@ namespace OHWebService.Modules
                         ";
 		
 		CommonModule cmn = new CommonModule();
-		public PropertyModule() : base ("/Properties")
+        public PropertyModule(IRootPathProvider pathProvider) : base("/Properties")
 		{
 			// /Properties           GET: Get All Available Properties (public) 
 			Get["/"] = parameter => { return GetAll(); };
+
+            // /Properties           GET: Get All Available Properties (public) by AgentId
+            Get["/{id}"] = parameter => { return GetAllListingById(parameter.id); };
+
 			
 			// /Properties           POST: Listing JSON in body
 			Post["/"] = parameter => { return this.AddListing(); };
+
+            // /Properties           POST: Listing JSON in body
+            Post["/upload"] = parameter => { return this.UploadListingImg(pathProvider); };
 			
 			// /Properties           DELETE: {ListingId}
 			Delete["/{id}"] = parameter => { return this.DeleteListing(parameter.id); };
@@ -66,7 +73,36 @@ namespace OHWebService.Modules
 				return CommonModule.HandleException(e, HttpStatusCode.OK, String.Format("PropertyModule.GetAll()"), "NG", this.Request);
 			}
 		}
-		
+
+		private object GetAllListingById(int agentId)
+        {
+            try
+            {
+                // create a connection to the PetaPoco orm and try to fetch and object with the given Id
+                PropertyContext ctx = new PropertyContext();
+               // Get Listing by AgentId
+                PropertyModel listing = ctx.GetById(agentId);
+
+                PropertyImgContext ctxImg = new PropertyImgContext();
+                // Get Images associated in a listing 
+                IList<PropertyImgModel> listingImg = ctxImg.GetByListingId(999, 0, listing.ListingId.ToString());
+                // return this info
+
+                ListingResp resp = new ListingResp
+                {
+                    Property = listing,
+                    Property_Images = listingImg
+                };
+
+                return resp;
+            }
+            catch (Exception e)
+            {
+                return CommonModule.HandleException(e, HttpStatusCode.OK, String.Format("PropertyModule.GetAll()"), "NG", this.Request);
+            }
+        }
+
+
 		// Add property for a particular agent
 		Nancy.Response AddListing()
 		{
@@ -89,16 +125,18 @@ namespace OHWebService.Modules
 
 				// Connect to the database
 				PropertyContext ctx = new PropertyContext();
+				//Get current datetime
+				listing.CreatedDate = DateTime.Now;
 				ctx.Add(listing);
 				
-				// 201 - created
-				Nancy.Response response = new Nancy.Responses.JsonResponse<PropertyModel>(listing, new DefaultJsonSerializer());
-				response.StatusCode = HttpStatusCode.Created;
-				// uri
-				string uri = this.Request.Url.SiteBase + this.Request.Path + "/" + listing.Description;
-				response.Headers["Location"] = uri;
+//				// 201 - created
+//				Nancy.Response response = new Nancy.Responses.JsonResponse<PropertyModel>(listing, new DefaultJsonSerializer());
+//				response.StatusCode = HttpStatusCode.Created;
+//				// uri
+//				string uri = this.Request.Url.SiteBase + this.Request.Path + "/" + listing.Description;
+//				response.Headers["Location"] = uri;
 
-				return response;
+				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.Created, "OK", listing.ListingId.ToString()); //  "Profile created successfully!");
 			}
 			catch (Exception e)
 			{
@@ -108,6 +146,53 @@ namespace OHWebService.Modules
 			}	
 		}
 		
+
+        // POST /upload
+        public dynamic UploadListingImg(IRootPathProvider pathProvider)
+        {
+            var listingId = this.Request.Form["ListingId"];
+            var filename = this.Request.Form["filename"];
+
+            //need to add data to db[listing_images]
+            PropertyContext ctx = new PropertyContext();
+            PropertyModel listing = ctx.GetById(listingId);
+            //check if this listing truly exists
+            if (listing == null)
+            {
+                return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.NotFound, "NG", String.Format("Property with id = {0} does not exist", listingId));
+            }
+
+            //store images to cloud and then only url will be saved in db
+            string p = pathProvider.GetRootPath();
+            var file = this.Request.Files.FirstOrDefault();
+            if (file == null)
+            {
+                return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.BadRequest, "NG", "File is empty!");
+            }
+
+            var filepath = Path.Combine(p, "App_Data", filename + ".jpeg");
+            
+            using (var fileStream = new FileStream(filepath, FileMode.Create))
+            {
+                file.Value.CopyTo(fileStream);
+            }
+
+            string urlFile = FileController.UploadFile(filename, filepath);
+
+            //add this data to listing_images db
+            PropertyImgContext ctxImg = new PropertyImgContext();
+            PropertyImgModel listingImg = new PropertyImgModel();
+
+            listingImg.Filename = filename;
+            listingImg.ListingId = listingId;
+            listingImg.Url = urlFile;
+
+            ctxImg.Add(listingImg);
+
+            return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.OK, "OK", urlFile);
+        }
+
+
 		// PUT /Properties/1
 		// http://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete 
 		Nancy.Response UpdateListing(int id)
