@@ -59,6 +59,7 @@ namespace OHWebService.Models
     {
         public PropertyModel Property { get; set; }
         public IList<PropertyImgModel> Images { get; set; }
+        public AgentModel Agent { get; set; }
     }
 
     public class PropertyList
