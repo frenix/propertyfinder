@@ -82,6 +82,8 @@ namespace OHWebService.Modules
             //PropertyList properties = new PropertyList();
             IList<ListingResp> properties = new List<ListingResp>();
          
+            AgentContext ctxAgent = new AgentContext();
+            AgentModel agent = ctxAgent.GetById(agentId);
             
             try
             {
@@ -101,7 +103,8 @@ namespace OHWebService.Modules
                     resp = new ListingResp
                     {
                         Property = listing,
-                        Images = listingImg
+                        Images = listingImg,
+                        Agent = agent
                     };
 
                     //add in a list of properties
