@@ -285,11 +285,11 @@ namespace OHWebService.Modules
 				
 				if (agent == null)
 				{
-					return 404;
+					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "PUT", HttpStatusCode.NotFound, "NG", String.Format("Agent with email  {0} does not exist", agent.EmailAddress));
 				}
 
 				ctx.update(agent);
-				return 204; // no content response
+                return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "PUT", HttpStatusCode.NoContent, "OK", String.Format("{0} updated successfully!", agent.EmailAddress));
 			}
 			catch (Exception e)
 			{

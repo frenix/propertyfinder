@@ -30,10 +30,16 @@ namespace OHWebService.Modules
 			return CommonModule.GetDatabase().Query<PropertyModel>(sql).ToList();
 		}
 
-        public PropertyModel GetById(int agentId)
+        public PropertyModel GetById(int listingId)
+        {
+            String sql = "select * from listing where ListingId =" + listingId.ToString();
+            return CommonModule.GetDatabase().FirstOrDefault<PropertyModel>(sql);
+        }
+
+        public IList<PropertyModel> GetByAgentId(int agentId)
         {
             String sql = "select * from listing where AgentId =" + agentId.ToString();
-            return CommonModule.GetDatabase().FirstOrDefault<PropertyModel>(sql);
+            return CommonModule.GetDatabase().Query<PropertyModel>(sql).ToList();
         }
 
 

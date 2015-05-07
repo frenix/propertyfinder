@@ -39,7 +39,7 @@ namespace OHWebService.Modules
 			Get["/"] = parameter => { return GetAll(); };
 
             // /Properties           GET: Get All Available Properties (public) by AgentId
-            Get["/{id}"] = parameter => { return GetAllListingById(parameter.id); };
+            Get["/{id}"] = parameter => { return GetAllListingByAgent(parameter.id); };
 
 			
 			// /Properties           POST: Listing JSON in body
@@ -51,7 +51,8 @@ namespace OHWebService.Modules
 			// /Properties           DELETE: {ListingId}
 			Delete["/{id}"] = parameter => { return this.DeleteListing(parameter.id); };
 			
-			// /Properties           UPDATE: 
+			// /Properties           UPDATE:  Token JSON in body
+            Put["/"] = parameter => { return this.UpdateListing(); };
 		}
 		
 		// -- IMPLEMENTATION PART --
@@ -74,27 +75,38 @@ namespace OHWebService.Modules
 			}
 		}
 
-		Nancy.Response GetAllListingById(int agentId)
+		Nancy.Response GetAllListingByAgent(int agentId)
         {
+            IList<PropertyImgModel> listingImg;
+            ListingResp resp = new ListingResp();
+            PropertyList properties = new PropertyList();
             try
             {
                 // create a connection to the PetaPoco orm and try to fetch and object with the given Id
                 PropertyContext ctx = new PropertyContext();
                // Get Listing by AgentId
-                PropertyModel listing = ctx.GetById(agentId);
+                IList<PropertyModel> listings = ctx.GetByAgentId(agentId);
 
                 PropertyImgContext ctxImg = new PropertyImgContext();
-                // Get Images associated in a listing 
-                IList<PropertyImgModel> listingImg = ctxImg.GetByListingId(999, 0, listing.ListingId.ToString());
-                // return this info
 
-                ListingResp resp = new ListingResp
+                foreach (var listing in listings)
                 {
-                    Property = listing,
-                    Property_Images = listingImg
-                };
-				
-             	Nancy.Response response = new Nancy.Responses.JsonResponse<ListingResp>(resp, new DefaultJsonSerializer());
+                    // Get Images associated in a listing 
+                    listingImg = ctxImg.GetByListingId(999, 0, listing.ListingId.ToString());
+
+                    // return this info
+                    resp = new ListingResp
+                    {
+                        Property = listing,
+                        Images = listingImg
+                    };
+
+                    //add in a list of properties
+                    //we want to have a json format in this way
+                    // { [listing1 [listing2images], listing2 [listing2images], ....}
+                    properties.Properties.Add(resp);
+                }
+                Nancy.Response response = new Nancy.Responses.JsonResponse<PropertyList>(properties, new DefaultJsonSerializer());
 				response.StatusCode = HttpStatusCode.OK;
 				return response;
 
@@ -198,7 +210,7 @@ namespace OHWebService.Modules
 
 		// PUT /Properties/1
 		// http://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete 
-		Nancy.Response UpdateListing(int id)
+		Nancy.Response UpdateListing()
 		{
 			PropertyModel listing = null;
 			try

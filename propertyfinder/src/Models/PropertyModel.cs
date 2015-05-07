@@ -58,6 +58,11 @@ namespace OHWebService.Models
     public class ListingResp
     {
         public PropertyModel Property { get; set; }
-        public IList<PropertyImgModel> Property_Images { get; set; }
+        public IList<PropertyImgModel> Images { get; set; }
+    }
+
+    public class PropertyList
+    {
+        public IList<ListingResp> Properties { get; set; }
     }
 }
