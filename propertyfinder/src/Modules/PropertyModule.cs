@@ -79,7 +79,10 @@ namespace OHWebService.Modules
         {
             IList<PropertyImgModel> listingImg;
             ListingResp resp = new ListingResp();
-            PropertyList properties = new PropertyList();
+            //PropertyList properties = new PropertyList();
+            IList<ListingResp> properties = new List<ListingResp>();
+         
+            
             try
             {
                 // create a connection to the PetaPoco orm and try to fetch and object with the given Id
@@ -104,9 +107,9 @@ namespace OHWebService.Modules
                     //add in a list of properties
                     //we want to have a json format in this way
                     // { [listing1 [listing2images], listing2 [listing2images], ....}
-                    properties.Properties.Add(resp);
+                    properties.Add(resp);
                 }
-                Nancy.Response response = new Nancy.Responses.JsonResponse<PropertyList>(properties, new DefaultJsonSerializer());
+                Nancy.Response response = new Nancy.Responses.JsonResponse< IList<ListingResp>>(properties, new DefaultJsonSerializer());
 				response.StatusCode = HttpStatusCode.OK;
 				return response;
 
@@ -220,12 +223,12 @@ namespace OHWebService.Modules
 
 				PropertyContext ctx = new PropertyContext();
 
-				listing.ListingId = id;
-				PropertyModel res = ctx.GetById(id);
-				if (res == null)
-				{
-					return 404;
-				}
+//				listing.ListingId = id;
+//				PropertyModel res = ctx.GetById(id);
+//				if (res == null)
+//				{
+//					return 404;
+//				}
 
 				ctx.update(listing);
 				return 204; // no content response
