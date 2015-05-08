@@ -219,6 +219,8 @@ namespace OHWebService.Modules
 		Nancy.Response UpdateListing()
 		{
 			PropertyModel listing = null;
+			int id;
+			
 			try
 			{
 				// bind the request body to the object
@@ -226,15 +228,18 @@ namespace OHWebService.Modules
 
 				PropertyContext ctx = new PropertyContext();
 
-//				listing.ListingId = id;
-//				PropertyModel res = ctx.GetById(id);
-//				if (res == null)
-//				{
-//					return 404;
-//				}
-
+				id = (int)listing.ListingId;
+				PropertyModel res = ctx.GetById(id);
+				if (res == null)
+				{
+					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "PUT", HttpStatusCode.NotFound, "NG", "Property not found");
+				}
+				
+				//update CreatedDate to Date of Update
+				listing.CreatedDate = DateTime.Now;
+				
 				ctx.update(listing);
-				return 204; // no content response
+				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "PUT", HttpStatusCode.Created, "OK", "Updated successfully!"); 
 			}
 			catch (Exception e)
 			{
