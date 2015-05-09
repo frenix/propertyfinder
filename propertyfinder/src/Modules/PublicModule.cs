@@ -37,9 +37,9 @@ namespace OHWebService.Modules
 			try
 			{
 				// create a connection to the PetaPoco orm and try to fetch and object with the given Id
-				PropertyContext ctx = new PropertyContext();
+				AgentContext ctxAgent = new AgentContext();
 				// Get all (or rather the first 999) listings
-                IList<PropertyModel> listings = ctx.Get(999, 0, ""); // future development parameters are: top, from, filter
+                IList<AgentModel> agents = ctxAgent.Get(999, 0, ""); // future development parameters are: top, from, filter
                	IList<ListingResp> properties = new List<ListingResp>();
                 
                	IList<PropertyImgModel> listingImg;
@@ -47,18 +47,17 @@ namespace OHWebService.Modules
 	    		
 				
 	    		PropertyContext propctx = new PropertyContext();
-				AgentContext ctxAgent = new AgentContext();
-					
+								
 				 IList<PropertyModel> listingsByAgent;
 				 	
                 // loop through each listings and then get related listing images
-                foreach(PropertyModel listing in listings) 
+                foreach(AgentModel agent in agents) 
                 {
                 	//properties.Add( PropertyHelper.GetListingByAgent(listing.AgentId));
-		            AgentModel agent = ctxAgent.GetById(listing.AgentId);
+		           
 		            
 		           	// Get Listing by AgentId
-		           	listingsByAgent = ctx.GetByAgentId(listing.AgentId);
+		           	listingsByAgent = propctx.GetByAgentId(agent.AgentId);
 		
 		            PropertyImgContext ctxImg = new PropertyImgContext();
 		
@@ -70,7 +69,7 @@ namespace OHWebService.Modules
 		                // return this info
 		                resp = new ListingResp
 		                {
-		                    Property = listing,
+		                    Property = listingperagent,
 		                    Images = listingImg,
 		                    Agent = agent
 		                };
