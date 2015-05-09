@@ -32,13 +32,13 @@ namespace OHWebService.Modules
 
         public PropertyModel GetById(int listingId)
         {
-            String sql = "select * from listing where ListingId =" + listingId.ToString();
+            String sql = "select * from listing where SoldFlag = 0 And ListingId =" + listingId.ToString();
             return CommonModule.GetDatabase().FirstOrDefault<PropertyModel>(sql);
         }
 
         public IList<PropertyModel> GetByAgentId(int agentId)
         {
-            String sql = "select * from listing where AgentId =" + agentId.ToString();
+            String sql = "select * from listing where SoldFlag = 0 And AgentId =" + agentId.ToString();
             return CommonModule.GetDatabase().Query<PropertyModel>(sql).ToList();
         }
 
