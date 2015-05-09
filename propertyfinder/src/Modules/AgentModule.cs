@@ -158,7 +158,7 @@ namespace OHWebService.Modules
                     file.Value.CopyTo(fileStream);
                 }
              	
-             	string urlFile = FileController.UploadFile(userName, filename);
+             	string urlFile = FileController.UploadFile(userName, filename, agentId);
              	
              	//need to update dbase with url of profilepic given the email add 
          		AgentContext ctx = new AgentContext();

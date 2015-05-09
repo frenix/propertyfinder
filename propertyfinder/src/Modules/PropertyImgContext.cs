@@ -38,7 +38,13 @@ namespace OHWebService.Modules
         {
             CommonModule.GetDatabase().Update(listingImg);
         }
-
+        
+		internal void deletebylistingid(int listingid)
+        {
+			String sql = "delete from listing_images where ListingId =" + listingid.ToString();
+			CommonModule.GetDatabase().Execute(sql);
+        }
+        
         internal void delete(PropertyImgModel listingImg)
         {
             CommonModule.GetDatabase().Delete(listingImg);

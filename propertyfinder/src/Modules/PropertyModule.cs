@@ -171,46 +171,66 @@ namespace OHWebService.Modules
         // POST /upload
         public dynamic UploadListingImg(IRootPathProvider pathProvider)
         {
-            var listingId = this.Request.Form["ListingId"];
-            var filename = this.Request.Form["filename"];
-
-            //need to add data to db[listing_images]
-            PropertyContext ctx = new PropertyContext();
-            PropertyModel listing = ctx.GetById(listingId);
-            //check if this listing truly exists
-            if (listing == null)
-            {
-                return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.NotFound, "NG", String.Format("Property with id = {0} does not exist", listingId));
-            }
-
-            //store images to cloud and then only url will be saved in db
-            string p = pathProvider.GetRootPath();
-            var file = this.Request.Files.FirstOrDefault();
-            if (file == null)
-            {
-                return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.BadRequest, "NG", "File is empty!");
-            }
-
-            var filepath = Path.Combine(p, "App_Data", filename + ".jpeg");
-            
-            using (var fileStream = new FileStream(filepath, FileMode.Create))
-            {
-                file.Value.CopyTo(fileStream);
-            }
-
-            string urlFile = FileController.UploadFile(filename, filepath);
-
-            //add this data to listing_images db
-            PropertyImgContext ctxImg = new PropertyImgContext();
+        	PropertyImgContext ctxImg = new PropertyImgContext();
             PropertyImgModel listingImg = new PropertyImgModel();
-
-            listingImg.Filename = filename;
-            listingImg.ListingId = listingId;
-            listingImg.Url = urlFile;
-
-            ctxImg.Add(listingImg);
-
-            return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.OK, "OK", urlFile);
+		            
+        	// We assume this listing id is existing in the db
+            var listingId = this.Request.Form["ListingId"];
+            string urlFile;
+            int idx=1;
+			try
+			{
+	            // Delete data first from cloudinary if it exists
+	            // set listingId as the tag name
+	            FileController.DeleteFileByTag(listingId);
+	            
+	            //delete entries in listing_images db also
+	            ctxImg.deletebylistingid(listingId);
+	            
+	            //store images to cloud and then only url will be saved in db
+	            string p = pathProvider.GetRootPath();
+//	            var file = this.Request.Files.FirstOrDefault();
+//	            if (file == null)
+//	            {
+//	                return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.BadRequest, "NG", "File is empty!");
+//	            }
+	
+	            var uploadDirectory = Path.Combine(p, "App_Data","Content", "uploads");
+	            if (!Directory.Exists(uploadDirectory))
+				{
+				    Directory.CreateDirectory(uploadDirectory);
+				}
+	            foreach (var file in Request.Files)
+				{
+	            	         
+	          		var filename = 	String.Format("img_{0}{1}", listingId, idx.ToString());
+	            	var filepath = Path.Combine(uploadDirectory, filename + ".jpeg");
+		            using (FileStream fileStream = new FileStream(filepath, FileMode.Create))
+		            {
+		                file.Value.CopyTo(fileStream);
+		            }
+				
+		            // set listingId as the tag name
+		            urlFile = FileController.UploadFile(filename, filepath, listingId);
+		
+		            //add this data to listing_images db
+		            
+		
+		            listingImg.Filename = filename;
+		            listingImg.ListingId = listingId;
+		            listingImg.Url = urlFile;
+		
+		            ctxImg.Add(listingImg);
+		            idx++;
+	            }
+	
+	            return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.OK, "OK", "Listings uploaded successfully!");
+			}
+			catch (Exception e)
+			{
+				String operation = String.Format("PropertyModule.UploadListingImg({0})", (listingId == null) ? "No Model Data" : listingId);
+				return CommonModule.HandleException(e, HttpStatusCode.OK, operation, "NG", this.Request);
+			}	
         }
 
 
