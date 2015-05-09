@@ -46,4 +46,13 @@ namespace OHWebService.Models
     {
 		public String token { get; set; }
     }
+    
+    public partial class AgentContactInfo
+    {
+    	public String SenderName { get; set; }
+    	public String SenderEmail { get; set; }
+    	public String Subject { get; set; }
+    	public String Message { get; set; }
+    	public Int64 AgentId { get; set; }
+    }
 }

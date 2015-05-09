@@ -36,7 +36,7 @@ namespace OHWebService.Modules
             return CommonModule.GetDatabase().FirstOrDefault<PropertyModel>(sql);
         }
 
-        public IList<PropertyModel> GetByAgentId(int agentId)
+        public IList<PropertyModel> GetByAgentId(long agentId)
         {
             String sql = "select * from listing where SoldFlag = 0 And AgentId =" + agentId.ToString();
             return CommonModule.GetDatabase().Query<PropertyModel>(sql).ToList();

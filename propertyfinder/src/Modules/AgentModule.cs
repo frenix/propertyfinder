@@ -50,8 +50,11 @@ namespace OHWebService.Modules
 			// /agent       POST: Agent JSON in body
 			Post["/"] = parameter => { return this.AddAgent(); };
 			
-			
+			// /agent       POST: Agent JSON in body
 			Post["/upload"] = parameter => { return this.UploadProfileImg(pathProvider); };
+			
+			// /agent       POST: Agent JSON in body
+			Post["/contact"] = parameter => { return this.ContactAgent(); };
 			
 			// /agent        DELETE: {AgentId}
 			Delete["/{authkey}"] = parameter => { return this.DeleteAgent(parameter.authkey); };
@@ -106,29 +109,8 @@ namespace OHWebService.Modules
 			}
 		}
 		
-		//Upload File (temp)
-//		private object Upload()
-//		{
-//		   var file = this.Request.Files.FirstOrDefault();
-//			IRootPathProvider pathProvider;
-//	
-//	        if (file != null)
-//	        {
-//	            var fileDetails = string.Format("{3} - {0} ({1}) {2}bytes", file.Name, file.ContentType, file.Value.Length, file.Key);
-//	            //user.FileDetails = fileDetails;
-//	            var filename = Path.Combine(pathProvider.GetRootPath(), "Images", 1 + ".jpeg");
-//	
-//	            using (var fileStream = new FileStream(filename, FileMode.Create))
-//	            {
-//	                file.Value.CopyTo(fileStream);
-//	            }
-//	            return HttpStatusCode.OK;
-//	        }
-//	        return HttpStatusCode.NotFound;
-        
-//		}
-
-	public dynamic UploadProfileImg(IRootPathProvider pathProvider)
+		// POST /agent/upload JSON (Filestream)
+		public dynamic UploadProfileImg(IRootPathProvider pathProvider)
         {
 	
 				string p = pathProvider.GetRootPath();
@@ -139,17 +121,8 @@ namespace OHWebService.Modules
 				}
                 var userName = this.Request.Form["username"];
                 var agentId = this.Request.Form["agentId"];
-                
-//                for (int i = 0; i < files.Value. .Value.; i++)
-//                {
-//                    HttpPostedFile file = files[i];
-//
-//                    string fname = context.Server.MapPath("Uploads\\" + userName.ToUpper() + "\\" + file.FileName);
-//                    file.SaveAs(fname);
-//                }
-//                
-				 var fileDetails = string.Format("{3} - {0} ({1}) {2}bytes", file.Name, file.ContentType, file.Value.Length, file.Key);
-                	
+                            
+				var fileDetails = string.Format("{3} - {0} ({1}) {2}bytes", file.Name, file.ContentType, file.Value.Length, file.Key);
                 var filename = Path.Combine(p, "App_Data", userName + ".jpeg");
       
                 
@@ -176,18 +149,46 @@ namespace OHWebService.Modules
              	return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.OK, "OK", urlFile);
         }
 	
-		
-		
-		
-		
-		
+		Nancy.Response ContactAgent()
+		{
+			// debug code only
+			// capture actual string posted in case the bind fails (as it will if the JSON is bad)
+			// need to do it now as the bind operation will remove the data
+			String rawBody = CommonModule.GetBodyRaw(this.Request);
+			
+			AgentContactInfo contact = new AgentContactInfo();
+			try
+			{
+				// bind the request body to the object via a Nancy module.
+				contact = this.Bind<AgentContactInfo>();
+				
+				// check exists. Return 409 if it does
+				if ((contact.SenderEmail.Length == 0) && (contact.AgentId == 0))
+				{
+					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.NotAcceptable, "NG", String.Format("Entries cannot be empty!"));
+				}
+				
+				// retrieve agent information
+				AgentContext ctx = new AgentContext();
+				AgentModel agent = ctx.GetById((int)contact.AgentId);
+				string agentname = agent.FirstName + " " + agent.LastName;
+				// setup for email
+				SendMail.ContactAgent(contact.SenderName,contact.SenderEmail, contact.Subject, contact.Message, agentname, agent.EmailAddress);
+				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.OK, "OK", "Agent successfully emailed!"); ;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(rawBody);
+				String operation = String.Format("AgentModule.ContactAgent({0})", (contact == null) ? "No Model Data" : contact.SenderEmail);
+				return CommonModule.HandleException(e, HttpStatusCode.OK, operation, "NG", this.Request);
+			}	
+		}
 		// POST /Agent
 		Nancy.Response AddAgent() 
 		{
 			// debug code only
 			// capture actual string posted in case the bind fails (as it will if the JSON is bad)
 			// need to do it now as the bind operation will remove the data
-			//String rawBody = this.GetBodyRaw(); 
 			String rawBody = CommonModule.GetBodyRaw(this.Request);
 			
 			//setup GUID for this user
@@ -216,19 +217,10 @@ namespace OHWebService.Modules
 				// Connect to the database
 				AgentContext ctx = new AgentContext();
 				ctx.Add(profile);
-				
-				// 201 - created
-//				Nancy.Response response = new Nancy.Responses.JsonResponse<AgentModel>(profile, new DefaultJsonSerializer());
-//				response.StatusCode = HttpStatusCode.Created;
-//				// uri
-//				string uri = this.Request.Url.SiteBase + this.Request.Path + "/" + profile.EmailAddress;
-//				response.Headers["Location"] = uri;
-				
-						
+					
 				//send email for confirmation
 				// this is to update confirmedFlag in db
 				SendMail.Send(fullName , profile.EmailAddress, uuid.ToString());
-//				return response;
 				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.Created, "OK", profile.AgentId.ToString()); //  "Profile created successfully!");
 			}
 			catch (Exception e)
@@ -255,7 +247,7 @@ namespace OHWebService.Modules
 				AgentModel ci = new AgentModel();
 				ci.AgentId = res.AgentId;
 				ctx.delete(ci);
-				//return 204;
+
 				return MsgBuilder.MsgResponse(this.Request.Url.ToString(),"DELETE", HttpStatusCode.NoContent, "OK", String.Format("{0} deleted successfully!", res.EmailAddress));
 			}
 			catch (Exception e)
@@ -270,7 +262,6 @@ namespace OHWebService.Modules
 			// debug code only
 			// capture actual string posted in case the bind fails (as it will if the JSON is bad)
 			// need to do it now as the bind operation will remove the data
-			//String rawBody = this.GetBodyRaw(); 
 			String rawBody = CommonModule.GetBodyRaw(this.Request);
 			
 			AgentModelToken agentauthkey = null;

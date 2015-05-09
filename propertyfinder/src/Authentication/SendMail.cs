@@ -109,5 +109,83 @@ namespace OHWebService.Authentication
            
             }
 		}
-	}
+		
+		public static int ContactAgent(string sendername, string sendermail, string subject, string message,string destname, string destmail)
+		{
+			try
+			{
+				MailMessage mail = new MailMessage();
+                //SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+                SmtpClient SmtpServer = new SmtpClient("smtp.sendgrid.net");
+                               
+                //mail.From = new MailAddress("proprtyfindr@gmail.com");
+                mail.From = new MailAddress(sendermail);
+                mail.To.Add(destmail);
+                
+                mail.Subject = subject;
+                mail.Body += " <html>";
+                mail.Body += "<body>";
+                mail.Body += "<table>";
+                
+                
+				mail.Body += "<tr>";
+                mail.Body += "<td>Hi " +  destname  + ",</td>";
+                mail.Body += "</tr>";
+				
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                 
+                mail.Body += "<tr>";
+                mail.Body += "<td>" + message + " </td>";
+                mail.Body += "</tr>";
+
+            	mail.Body += "<tr><td></td></tr>";					
+                mail.Body += "<tr><td></td></tr>";
+                
+                mail.Body += "<tr>";
+                mail.Body += "<td>Thanks, </td>";
+                mail.Body += "</tr>";
+                
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                
+                mail.Body += "<tr>";
+                mail.Body += "<td>" + sendername + " </td>";
+                mail.Body += "</tr>";
+                
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                
+                mail.Body += "<tr><td></td></tr>";
+                	
+                mail.Body += "</table>";
+                mail.Body += "</body>";
+                mail.Body += "</html>";
+
+                mail.IsBodyHtml = true;
+
+                ////System.Net.Mail.Attachment attachment;
+                ////attachment = new System.Net.Mail.Attachment(@"D:\bkup\krishna.mdb");
+                ////mail.Attachments.Add(attachment);
+
+                SmtpServer.Port = 587;
+                SmtpServer.Credentials = new      
+                //System.Net.NetworkCredential("proprtyfindr@gmail.com", "395Excel04");
+                System.Net.NetworkCredential("45241146-f24f-4109-b9fe-23df0d1bd2fb@apphb.com", "kpmxuiwm8724");
+                SmtpServer.EnableSsl = true;
+
+                SmtpServer.Send(mail);
+
+				return 1;
+			}
+			catch (Exception err)
+            {
+            	Console.WriteLine(err.ToString());
+            	return 0;
+           
+            }
+		}
+		
+		
+	} //end of class
 }

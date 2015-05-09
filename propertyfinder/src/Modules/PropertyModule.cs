@@ -33,7 +33,7 @@ namespace OHWebService.Modules
                         ";
 		
 		CommonModule cmn = new CommonModule();
-        public PropertyModule(IRootPathProvider pathProvider) : base("/Properties")
+        public PropertyModule(IRootPathProvider pathProvider) : base("/properties")
 		{
 			// /Properties           GET: Get All Available Properties (public) 
 			Get["/"] = parameter => { return GetAll(); };
@@ -75,7 +75,7 @@ namespace OHWebService.Modules
 			}
 		}
 
-		Nancy.Response GetAllListingByAgent(int agentId)
+		public Nancy.Response GetAllListingByAgent(long agentId)
         {
             IList<PropertyImgModel> listingImg;
             ListingResp resp = new ListingResp();
@@ -87,8 +87,8 @@ namespace OHWebService.Modules
             
             try
             {
-                // create a connection to the PetaPoco orm and try to fetch and object with the given Id
-                PropertyContext ctx = new PropertyContext();
+               // create a connection to the PetaPoco orm and try to fetch and object with the given Id
+               PropertyContext ctx = new PropertyContext();
                // Get Listing by AgentId
                 IList<PropertyModel> listings = ctx.GetByAgentId(agentId);
 
@@ -112,6 +112,7 @@ namespace OHWebService.Modules
                     // { [listing1 [listing2images], listing2 [listing2images], ....}
                     properties.Add(resp);
                 }
+                // Nancy will convert this into an array of JSON objects
                 Nancy.Response response = new Nancy.Responses.JsonResponse< IList<ListingResp>>(properties, new DefaultJsonSerializer());
 				response.StatusCode = HttpStatusCode.OK;
 				return response;
