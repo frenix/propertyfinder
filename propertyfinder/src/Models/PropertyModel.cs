@@ -69,6 +69,6 @@ namespace OHWebService.Models
     
     public class PropertySearch
     {
-    	public String SearchItem { get; set; }
+    	public String search { get; set; }
     }
 }
