@@ -26,8 +26,11 @@ namespace OHWebService.Modules
 			// /Public           GET: Get All Available Properties (public) 
 			Get["/"] = parameter => { return GetAll(); };
 			
-			Get["/search"] = parameter => { return Search(); };
-
+			// something is wrong with frontend, data sent is always empty
+			// try to recheck, use POST instead
+			//Get["/search"] = parameter => { return Search(); };
+			
+			Post["/search"] = parameter => { return Search(); };
 
 		}
 		
@@ -94,7 +97,7 @@ namespace OHWebService.Modules
 			}
 		}
 		
-		public object Search ()
+		Nancy.Response Search ()
 		{
 			// capture actual string posted in case the bind fails (as it will if the JSON is bad)
 			// need to do it now as the bind operation will remove the data
@@ -118,7 +121,7 @@ namespace OHWebService.Modules
 	    		AgentModel agent = new AgentModel();
 					
 	           	// Get Listing by AgentId
-	           	listings = propctx.GetByAddress(search.SearchItem);
+	           	listings = propctx.GetByAddress(search.search);
 	
 	            PropertyImgContext ctxImg = new PropertyImgContext();
 	
