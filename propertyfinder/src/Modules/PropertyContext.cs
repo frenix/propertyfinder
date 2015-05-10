@@ -44,7 +44,7 @@ namespace OHWebService.Modules
 
         public IList<PropertyModel> GetByAddress (string location)
         {
-        	String sql = "select * from listing where Address LIKE '%" + location + "%'";
+        	String sql = "select * from listing where SoldFlag = 0 And Address LIKE '%" + location + "%'";
     	 	return CommonModule.GetDatabase().Query<PropertyModel>(sql).ToList();
         }
         public void Add(PropertyModel listing)
