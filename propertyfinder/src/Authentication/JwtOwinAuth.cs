@@ -32,7 +32,9 @@ namespace OHWebService.Authentication
             "/agents/contact",
             "/agents/contact/",
             "/public",
-            "/public/"
+            "/public/",
+            "/public/search",
+            "/public/search/"
         };
 
         public JwtOwinAuth (AppFunc next)

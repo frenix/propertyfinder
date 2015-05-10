@@ -42,7 +42,11 @@ namespace OHWebService.Modules
             return CommonModule.GetDatabase().Query<PropertyModel>(sql).ToList();
         }
 
-
+        public IList<PropertyModel> GetByAddress (string location)
+        {
+        	String sql = "select * from listing where Address LIKE '%" + location + "%'";
+    	 	return CommonModule.GetDatabase().Query<PropertyModel>(sql).ToList();
+        }
         public void Add(PropertyModel listing)
 		{
 			CommonModule.GetDatabase().Insert(listing);

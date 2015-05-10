@@ -66,4 +66,9 @@ namespace OHWebService.Models
     {
         public IList<ListingResp> Properties { get; set; }
     }
+    
+    public class PropertySearch
+    {
+    	public String SearchItem { get; set; }
+    }
 }

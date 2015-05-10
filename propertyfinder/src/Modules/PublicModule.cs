@@ -25,6 +25,8 @@ namespace OHWebService.Modules
 		{
 			// /Public           GET: Get All Available Properties (public) 
 			Get["/"] = parameter => { return GetAll(); };
+			
+			Get["/search"] = parameter => { return Search(); };
 
 
 		}
@@ -32,6 +34,7 @@ namespace OHWebService.Modules
 		// -- IMPLEMENTATION PART --
 		
 		// Get all data
+		// note: make this as one function
 		private object GetAll()
 		{	
 			try
@@ -90,5 +93,67 @@ namespace OHWebService.Modules
 				return CommonModule.HandleException(e, HttpStatusCode.OK, String.Format("PropertyModule.GetAll()"), "NG", this.Request);
 			}
 		}
-	}
+		
+		public object Search ()
+		{
+			// capture actual string posted in case the bind fails (as it will if the JSON is bad)
+			// need to do it now as the bind operation will remove the data
+			//String rawBody = this.GetBodyRaw(); 
+			String rawBody = CommonModule.GetBodyRaw(this.Request);
+			
+			//  searchItem = location
+			PropertySearch search = null;
+			try
+			{
+			 	// bind the request body to the object via a Nancy module.
+				search = this.Bind<PropertySearch>();
+				
+               	IList<ListingResp> properties = new List<ListingResp>();
+                IList<PropertyModel> listings;
+               	IList<PropertyImgModel> listingImg;
+               	
+	    		ListingResp resp = new ListingResp();
+	    		PropertyContext propctx = new PropertyContext();
+	    		AgentContext ctxAgent = new AgentContext();
+	    		AgentModel agent = new AgentModel();
+					
+	           	// Get Listing by AgentId
+	           	listings = propctx.GetByAddress(search.SearchItem);
+	
+	            PropertyImgContext ctxImg = new PropertyImgContext();
+	
+	            foreach (var listing in listings)
+	            {
+	                // Get Images associated in a listing 
+	                listingImg = ctxImg.GetByListingId(999, 0, listing.ListingId.ToString());
+					
+	                // get agent 
+	                agent = ctxAgent.GetById(listing.AgentId);
+	                
+	                // return this info
+	                resp = new ListingResp
+	                {
+	                    Property = listing,
+	                    Images = listingImg,
+	                    Agent = agent
+	                };
+	
+	                //add in a list of properties
+	                //we want to have a json format in this way
+	                // { [listing1 [listing2images], listing2 [listing2images], ....}
+	                properties.Add(resp);
+	            }
+                
+                
+				Nancy.Response response = new Nancy.Responses.JsonResponse< IList<ListingResp>>(properties, new DefaultJsonSerializer());
+				response.StatusCode = HttpStatusCode.OK;
+				return response;
+			}
+			catch (Exception e)
+			{
+				return CommonModule.HandleException(e, HttpStatusCode.OK, String.Format("PropertyModule.GetAll()"), "NG", this.Request);
+			}
+		}
+		
+	} // end of class
 }
