@@ -188,7 +188,7 @@ namespace OHWebService.Authentication
 		
 		public static int ConfirmationEmail(string sendername, string sendermail)
 		{
-			string message = "Well done! Email successfully sent!";
+			string message = "Well done! Agent successfully emailed!";
 			try
 			{
 				MailMessage mail = new MailMessage();
@@ -215,8 +215,7 @@ namespace OHWebService.Authentication
                 mail.Body += "<td>" + message + " </td>";
                 mail.Body += "</tr>";
 
-            	mail.Body += "<tr><td></td></tr>";					
-                mail.Body += "<tr><td></td></tr>";
+            	mail.Body += "<tr><td></td></tr>";
                 
                 mail.Body += "<tr>";
                 mail.Body += "<td>Thanks, </td>";
@@ -226,13 +225,15 @@ namespace OHWebService.Authentication
                 mail.Body += "<tr><td></td></tr>";
                 
                 mail.Body += "<tr>";
-                mail.Body += "<td>" + sendername + " </td>";
+                mail.Body += "<td>The Ownhome Team </td>";
                 mail.Body += "</tr>";
                 
                 mail.Body += "<tr><td></td></tr>";
                 mail.Body += "<tr><td></td></tr>";
                 
-                mail.Body += "<tr><td></td></tr>";
+                 mail.Body += "<tr>";
+                mail.Body += "<td><i>Rent. Own. Stay. Enjoy! </i></td>";
+                mail.Body += "</tr>";
                 	
                 mail.Body += "</table>";
                 mail.Body += "</body>";
