@@ -186,6 +186,78 @@ namespace OHWebService.Authentication
             }
 		}
 		
+		public static int ConfirmationEmail(string sendername, string sendermail)
+		{
+			string message = "Well done! Email successfully sent!";
+			try
+			{
+				MailMessage mail = new MailMessage();
+                //SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+                SmtpClient SmtpServer = new SmtpClient("smtp.sendgrid.net");
+                               
+                mail.From = new MailAddress("45241146-f24f-4109-b9fe-23df0d1bd2fb@apphb.com");
+                mail.To.Add(sendermail);
+                
+                mail.Subject = "[Ownhome] Confirmation Email";
+                mail.Body += " <html>";
+                mail.Body += "<body>";
+                mail.Body += "<table>";
+                
+                
+				mail.Body += "<tr>";
+                mail.Body += "<td>Hi " +  sendername  + ",</td>";
+                mail.Body += "</tr>";
+				
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                 
+                mail.Body += "<tr>";
+                mail.Body += "<td>" + message + " </td>";
+                mail.Body += "</tr>";
+
+            	mail.Body += "<tr><td></td></tr>";					
+                mail.Body += "<tr><td></td></tr>";
+                
+                mail.Body += "<tr>";
+                mail.Body += "<td>Thanks, </td>";
+                mail.Body += "</tr>";
+                
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                
+                mail.Body += "<tr>";
+                mail.Body += "<td>" + sendername + " </td>";
+                mail.Body += "</tr>";
+                
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                
+                mail.Body += "<tr><td></td></tr>";
+                	
+                mail.Body += "</table>";
+                mail.Body += "</body>";
+                mail.Body += "</html>";
+
+                mail.IsBodyHtml = true;
+
+                SmtpServer.Port = 587;
+                SmtpServer.Credentials = new      
+
+                System.Net.NetworkCredential("45241146-f24f-4109-b9fe-23df0d1bd2fb@apphb.com", "kpmxuiwm8724");
+                SmtpServer.EnableSsl = true;
+
+                SmtpServer.Send(mail);
+
+				return 1;
+			}
+			catch (Exception err)
+            {
+            	Console.WriteLine(err.ToString());
+            	return 0;
+           
+            }
+		}
+		
 		
 	} //end of class
 }
