@@ -174,6 +174,9 @@ namespace OHWebService.Modules
 				string agentname = agent.FirstName + " " + agent.LastName;
 				// setup for email
 				SendMail.ContactAgent(contact.SenderName,contact.SenderEmail, contact.Subject, contact.Message, agentname, agent.EmailAddress);
+				// semd confirmation email to sender
+				SendMail.ConfirmationEmail(contact.SenderName, contact.SenderEmail);
+				
 				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.OK, "OK", "Agent successfully emailed!"); ;
 			}
 			catch (Exception e)
