@@ -186,9 +186,9 @@ namespace OHWebService.Authentication
             }
 		}
 		
-		public static int ConfirmationEmail(string sendername, string sendermail)
+		public static int ConfirmationEmail(string sendername, string sendermail, string  destname, string message)
 		{
-			string message = "Well done! Agent successfully emailed!";
+			string confmessage = "Well done! Agent successfully emailed!";
 			try
 			{
 				MailMessage mail = new MailMessage();
@@ -212,7 +212,7 @@ namespace OHWebService.Authentication
                 mail.Body += "<tr><td></td></tr>";
                  
                 mail.Body += "<tr>";
-                mail.Body += "<td>" + message + " </td>";
+                mail.Body += "<td>" + confmessage + " </td>";
                 mail.Body += "</tr>";
 
             	mail.Body += "<tr><td></td></tr>";
@@ -231,11 +231,53 @@ namespace OHWebService.Authentication
                 mail.Body += "<tr><td></td></tr>";
                 mail.Body += "<tr><td></td></tr>";
                 
-                 mail.Body += "<tr>";
+                mail.Body += "<tr>";
                 mail.Body += "<td><i>Rent. Own. Stay. Enjoy! </i></td>";
                 mail.Body += "</tr>";
                 	
                 mail.Body += "</table>";
+                // -------
+                mail.Body += "<table>";
+                
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                
+                mail.Body += "<tr>";
+                mail.Body += "<td><i>For your record, here are the details of your email to your agent! </i></td>";
+                mail.Body += "</tr>";
+                
+				mail.Body += "<tr>";
+                mail.Body += "<td>Hi " +  destname  + ",</td>";
+                mail.Body += "</tr>";
+				
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                 
+                mail.Body += "<tr>";
+                mail.Body += "<td>" + message + " </td>";
+                mail.Body += "</tr>";
+
+            	mail.Body += "<tr><td></td></tr>";					
+                mail.Body += "<tr><td></td></tr>";
+                
+                mail.Body += "<tr>";
+                mail.Body += "<td>Thanks, </td>";
+                mail.Body += "</tr>";
+                
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                
+                mail.Body += "<tr>";
+                mail.Body += "<td>" + sendername + " </td>";
+                mail.Body += "</tr>";
+                
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                
+                mail.Body += "<tr><td></td></tr>";
+                	
+                mail.Body += "</table>";
+                
                 mail.Body += "</body>";
                 mail.Body += "</html>";
 

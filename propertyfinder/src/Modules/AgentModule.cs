@@ -175,7 +175,7 @@ namespace OHWebService.Modules
 				// setup for email
 				SendMail.ContactAgent(contact.SenderName,contact.SenderEmail, contact.Subject, contact.Message, agentname, agent.EmailAddress);
 				// semd confirmation email to sender
-				SendMail.ConfirmationEmail(contact.SenderName, contact.SenderEmail);
+				SendMail.ConfirmationEmail(contact.SenderName, contact.SenderEmail, agentname, contact.Message);
 				
 				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.OK, "OK", "Agent successfully emailed!"); ;
 			}
