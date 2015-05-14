@@ -72,6 +72,7 @@ namespace OHWebService.Modules
         {
     	  	AgentContext ctx = new AgentContext();
 			AgentModel agent = ctx.GetByEmailAdd (loginCredential.email);
+			string uuid = Guid.NewGuid().ToString();
 			
 		 	try
             {
@@ -82,11 +83,12 @@ namespace OHWebService.Modules
 				// ConfirmFlag = 1 [confirm account], = 2 [reset password mdoe], = 3 [deactivate account]
 				agent.ConfirmFlag = "2"; //set flag to 1
 				// set a generated password
-				agent.Password = Guid.NewGuid().ToString();
+				agent.Password = Base64Encode(uuid);
+				
 				ctx.update(agent);
 				 
 				// send email to use with a generated password
-				SendMail.SendCredentials(string.Format("{0} {1}", agent.FirstName, agent.LastName), agent.EmailAddress,agent.Password);
+				SendMail.SendCredentials(string.Format("{0} {1}", agent.FirstName, agent.LastName), agent.EmailAddress, uuid);
 				
 				// no content response
 				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.OK, "OK", "Email with password sent sucessfull to user!");
@@ -211,6 +213,11 @@ namespace OHWebService.Modules
 			}
 
             return ret;			
+		}
+     	
+     	public static string Base64Encode(string plainText) {
+		  var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+		  return System.Convert.ToBase64String(plainTextBytes);
 		}
 
     } //end of AuthModule 
