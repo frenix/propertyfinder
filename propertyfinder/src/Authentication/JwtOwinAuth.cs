@@ -27,6 +27,8 @@ namespace OHWebService.Authentication
             "/",
             "/login",
             "/login/",
+            "/login/forgot",
+            "/login/forgot/",
             "/agents",
             "/agents/",
             "/agents/contact",

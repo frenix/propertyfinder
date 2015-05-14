@@ -234,11 +234,16 @@ namespace OHWebService.Authentication
                 mail.Body += "<tr>";
                 mail.Body += "<td><i>Rent. Own. Stay. Enjoy! </i></td>";
                 mail.Body += "</tr>";
-                	
+            	
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                
                 mail.Body += "</table>";
                 // -------
                 mail.Body += "<table>";
                 
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
                 mail.Body += "<tr><td></td></tr>";
                 mail.Body += "<tr><td></td></tr>";
                 
@@ -294,6 +299,95 @@ namespace OHWebService.Authentication
 				return 1;
 			}
 			catch (Exception err)
+            {
+            	Console.WriteLine(err.ToString());
+            	return 0;
+           
+            }
+		}
+		
+		public static int SendCredentials(string fullname, string email, string uuid)
+		{
+			try
+            {
+                MailMessage mail = new MailMessage();
+                //SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+                SmtpClient SmtpServer = new SmtpClient("smtp.sendgrid.net");
+                               
+                //mail.From = new MailAddress("proprtyfindr@gmail.com");
+                mail.From = new MailAddress("45241146-f24f-4109-b9fe-23df0d1bd2fb@apphb.com");
+
+                mail.To.Add(email);
+                
+                mail.Subject = "[Ownhome.com] Forgot Password ";
+                mail.Body += " <html>";
+                mail.Body += "<body>";
+                mail.Body += "<table>";
+
+				mail.Body += "<tr>";
+                mail.Body += "<td>Hi " +  fullname  + ",</td>";
+                mail.Body += "</tr>";
+				
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                 
+                mail.Body += "<tr>";
+                mail.Body += "<td>Please see a generated password for you. Please login again using this password.</td>";
+                mail.Body += "</tr>";
+				
+             	mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                
+             	mail.Body += "<tr>";
+                mail.Body += "<td>Your password: </td>";
+                mail.Body += "</tr>";
+                
+                mail.Body += "<tr>";
+                mail.Body += "<td><b>" + uuid + " </b></td>";
+                mail.Body += "</tr>";
+				
+                mail.Body += "<tr><td></td></tr>";
+                
+                mail.Body += "<tr>";
+                mail.Body += "<td>Thanks, </td>";
+                mail.Body += "</tr>";
+                
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                
+                mail.Body += "<tr>";
+                mail.Body += "<td>The Ownhome Team </td>";
+                mail.Body += "</tr>";
+                
+                mail.Body += "<tr><td></td></tr>";
+                mail.Body += "<tr><td></td></tr>";
+                
+                 mail.Body += "<tr>";
+                mail.Body += "<td><i>Rent. Own. Stay. Enjoy! </i></td>";
+                mail.Body += "</tr>";
+                	
+                mail.Body += "</table>";
+                mail.Body += "</body>";
+                mail.Body += "</html>";
+
+                mail.IsBodyHtml = true;
+
+                ////System.Net.Mail.Attachment attachment;
+                ////attachment = new System.Net.Mail.Attachment(@"D:\bkup\krishna.mdb");
+                ////mail.Attachments.Add(attachment);
+
+                SmtpServer.Port = 587;
+                SmtpServer.Credentials = new      
+                //System.Net.NetworkCredential("proprtyfindr@gmail.com", "395Excel04");
+                System.Net.NetworkCredential("45241146-f24f-4109-b9fe-23df0d1bd2fb@apphb.com", "kpmxuiwm8724");
+                SmtpServer.EnableSsl = true;
+
+                SmtpServer.Send(mail);
+
+                return 1;              
+
+            }
+            catch (Exception err)
             {
             	Console.WriteLine(err.ToString());
             	return 0;
