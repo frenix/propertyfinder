@@ -57,7 +57,7 @@ namespace OHWebService.Modules
 		public AgentModel GetByEmailAdd(string  emailadd)
 		{
 		    //String sql = "select * from property_agent where EmailAddress ='" + emailadd + "' and Password='" + pswd +"'";
-		    String sql = "select AgentId, FirstName, LastName, EmailAddress, ProfileFileName, ProfileUrl, Description, ConfirmFlag from property_agent where EmailAddress = @0";
+		    String sql = "select AgentId, FirstName, LastName, EmailAddress, AuthKey, ProfileFileName, ProfileUrl, Description, ConfirmFlag from property_agent where EmailAddress = @0";
 		    
 		    return CommonModule.GetDatabase().FirstOrDefault<AgentModel>(sql,emailadd);
 		}
