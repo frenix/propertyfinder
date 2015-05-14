@@ -60,7 +60,7 @@ namespace OHWebService.Modules
 			Delete["/{authkey}"] = parameter => { return this.DeleteAgent(parameter.authkey); };
 			
 			// /agent/		PUT: Token JSON in body
-			Put["/"] = parameter => { return this.UpdateAgentByToken(); };
+			Put["/"] = parameter => { return this.UpdateAgentById(); };
 		}
 		
 		// -- IMPLEMENTATION PART --
@@ -80,6 +80,8 @@ namespace OHWebService.Modules
 				}
 				else
 				{
+					res.Password = "";
+					res.AuthKey = "";
 					// success. The Nancy server will automatically serialise this to JSON
 					return res;
 				}
@@ -260,34 +262,37 @@ namespace OHWebService.Modules
 		}
 		
 		//PUT /agents
-		Nancy.Response UpdateAgentByToken()
+		Nancy.Response UpdateAgentById()
 		{
 			// debug code only
 			// capture actual string posted in case the bind fails (as it will if the JSON is bad)
 			// need to do it now as the bind operation will remove the data
 			String rawBody = CommonModule.GetBodyRaw(this.Request);
 			
-			AgentModelToken agentauthkey = null;
+			AgentModel agentmdl = null;
 			try
 			{
 				// bind the request body to the object
-				agentauthkey= this.Bind<AgentModelToken>();
+				agentmdl= this.Bind<AgentModel>();
 
 				AgentContext ctx = new AgentContext();
 
-				AgentModel agent = ctx.GetByToken(agentauthkey.token);
+				AgentModel agent = ctx.GetById(agentmdl.AgentId);
 				
 				if (agent == null)
 				{
 					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "PUT", HttpStatusCode.NotFound, "NG", String.Format("Agent with email  {0} does not exist", agent.EmailAddress));
 				}
-
+				
+				agent.Password = agentmdl.Password;
+				// make account confirm
+				agent.ConfirmFlag = "1";
 				ctx.update(agent);
                 return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "PUT", HttpStatusCode.NoContent, "OK", String.Format("{0} updated successfully!", agent.EmailAddress));
 			}
 			catch (Exception e)
 			{
-				String operation = String.Format("AgentModule.UpdateAgentByToken({0})", (agentauthkey == null) ? "No Model Data" : agentauthkey.token);
+				String operation = String.Format("AgentModule.UpdateAgentById({0})", (agentmdl == null) ? "No Model Data" : agentmdl.AgentId.ToString());
 				return CommonModule.HandleException(e, HttpStatusCode.OK, operation,"NG",this.Request);
 			}
 		}

@@ -36,7 +36,7 @@ namespace OHWebService.Modules
         //maybe not use
         public AgentModel GetById(long id)
 		{
-        	String sql = "select AgentId, FirstName, LastName, EmailAddress, ProfileFileName, ProfileUrl, Description, ConfirmFlag from property_agent where AgentId =" + id.ToString();
+        	String sql = "select * from property_agent where AgentId =" + id.ToString();
 			return CommonModule.GetDatabase().FirstOrDefault<AgentModel>(sql);
 		}
         
