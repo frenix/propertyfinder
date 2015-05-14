@@ -37,6 +37,8 @@ namespace OHWebService.Modules
             secretKey = System.Configuration.ConfigurationManager.AppSettings["SecretKey"];
 
             Post ["/"] = _ => LoginHandler(this.Bind<LoginRequest>());
+            
+            Post ["/forgot"] = _ =>LoginForgotPw(this.Bind<LoginRequest>());
 
             //PUT: Token JSON in body {"token":"XXXX"}
             Put["/"] = _ => LoginConfirmAcct(); 
@@ -63,6 +65,33 @@ namespace OHWebService.Modules
                 return MsgBuilder.MsgJWTResponse(HttpStatusCode.OK, token, "OK", msgInfo, profile);
             } else {   
                return MsgBuilder.MsgJWTResponse(HttpStatusCode.Unauthorized, "", "NG", msgInfo, null);
+            }
+        }
+        
+        public dynamic LoginForgotPw(LoginRequest loginCredential)
+        {
+    	  	AgentContext ctx = new AgentContext();
+			AgentModel agent = ctx.GetByEmailAdd (loginCredential.email);
+		 	try
+            {
+				if (agent == null)
+				{
+				    return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.NotFound, "NG", "Email not found!");
+				}
+				// ConfirmFlag = 1 [confirm account], = 2 [reset password mdoe], = 3 [deactivate account]
+				agent.ConfirmFlag = "2"; //set flag to 1
+				ctx.update(agent);
+				 
+				// send email to use with a generated password
+				SendMail.SendCredentials(string.Format("{0} {1}", agent.FirstName, agent.LastName), agent.EmailAddress, Guid.NewGuid().ToString());
+				
+				// no content response
+				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "POST", HttpStatusCode.OK, "OK", "Email with password sent sucessfull to user!");
+			 }
+            catch (Exception e)
+            {
+                String operation = String.Format("AuthModule.LoginForgotPw({0})", (agent == null) ? "No Model Data" : agent.EmailAddress);
+                return CommonModule.HandleException(e, HttpStatusCode.OK, operation, "NG", this.Request);
             }
         }
         
