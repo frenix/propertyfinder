@@ -39,7 +39,7 @@ namespace OHWebService.Modules
 			Get["/"] = parameter => { return GetAll(); };
 
             // /Properties           GET: Get All Available Properties (public) by AgentId
-            Get["/{id}"] = parameter => { return GetAllListingByAgent(parameter.id); };
+            Get["/agent/{id}"] = parameter => { return GetAllListingByAgent(parameter.id); };
 
 			
 			// /Properties           POST: Listing JSON in body
@@ -284,7 +284,7 @@ namespace OHWebService.Modules
 				PropertyModel ci = new PropertyModel();
 				ci.ListingId = id;
 				ctx.delete(ci);
-				return 204;
+				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "DELETE", HttpStatusCode.OK, "OK", "Deleted successfully!"); 
 			}
 			catch (Exception e)
 			{
