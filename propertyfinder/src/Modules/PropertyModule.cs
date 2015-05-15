@@ -276,13 +276,17 @@ namespace OHWebService.Modules
 			{
 				PropertyContext ctx = new PropertyContext();
 				PropertyModel res = ctx.GetById(id);
-
+                
+				PropertyImgContext ctxImg = new PropertyImgContext();
 				if (res == null)
 				{
 					return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "DELETE", HttpStatusCode.NotFound, "NG", String.Format("Agent with Id = {0} does not exist", id));
 				}
 				PropertyModel ci = new PropertyModel();
 				ci.ListingId = id;
+				// delete images from listing images table
+				ctxImg.deletebylistingid(id);
+				// now delete listings table
 				ctx.delete(ci);
 				return MsgBuilder.MsgResponse(this.Request.Url.ToString(), "DELETE", HttpStatusCode.OK, "OK", "Deleted successfully!"); 
 			}

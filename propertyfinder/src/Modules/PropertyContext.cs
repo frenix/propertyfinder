@@ -32,7 +32,7 @@ namespace OHWebService.Modules
 
         public PropertyModel GetById(int listingId)
         {
-            String sql = "select * from listing where SoldFlag = 0 And ListingId =" + listingId.ToString();
+            String sql = "select * from listing where ListingId =" + listingId.ToString();
             return CommonModule.GetDatabase().FirstOrDefault<PropertyModel>(sql);
         }
 
