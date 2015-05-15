@@ -42,7 +42,7 @@ namespace OHWebService.Modules
         
 		public AgentModel GetByToken(string token)
 		{
-		    String sql = "select AgentId, FirstName, LastName, EmailAddress, ProfileFileName, ProfileUrl, Description, ConfirmFlag from property_agent where AuthKey = @0";
+		    String sql = "select * from property_agent where AuthKey = @0";
 			return CommonModule.GetDatabase().FirstOrDefault<AgentModel>(sql, token);
 		}
         
