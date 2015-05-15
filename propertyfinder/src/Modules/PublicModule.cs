@@ -63,7 +63,7 @@ namespace OHWebService.Modules
 		           
 		            
 		           	// Get Listing by AgentId
-		           	listingsByAgent = propctx.GetByAgentId(agent.AgentId);
+		           	listingsByAgent = propctx.GetByAgentId(agent.AgentId, true);
 		
 		            PropertyImgContext ctxImg = new PropertyImgContext();
 		

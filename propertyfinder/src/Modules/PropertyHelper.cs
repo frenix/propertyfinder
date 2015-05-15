@@ -37,7 +37,7 @@ namespace OHWebService.Modules
     		// create a connection to the PetaPoco orm and try to fetch and object with the given Id
            	PropertyContext ctx = new PropertyContext();
            	// Get Listing by AgentId
-            IList<PropertyModel> listings = ctx.GetByAgentId(agentId);
+            IList<PropertyModel> listings = ctx.GetByAgentId(agentId, false);
 
             PropertyImgContext ctxImg = new PropertyImgContext();
 

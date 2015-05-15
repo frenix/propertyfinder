@@ -36,9 +36,19 @@ namespace OHWebService.Modules
             return CommonModule.GetDatabase().FirstOrDefault<PropertyModel>(sql);
         }
 
-        public IList<PropertyModel> GetByAgentId(long agentId)
+        public IList<PropertyModel> GetByAgentId(long agentId, bool inclSold)
         {
-            String sql = "select * from listing where SoldFlag = 0 And AgentId =" + agentId.ToString();
+             String sql;
+            if (inclSold == false ) 
+            {
+                // do not include sold properties in the list
+                sql = "select * from listing where SoldFlag = 0 And AgentId =" + agentId.ToString();
+            }
+            else 
+            {
+                // include all properties, sold or unsold
+                sql = "select * from listing where AgentId =" + agentId.ToString();
+            }
             return CommonModule.GetDatabase().Query<PropertyModel>(sql).ToList();
         }
 
