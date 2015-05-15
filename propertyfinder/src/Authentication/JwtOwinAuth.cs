@@ -33,6 +33,8 @@ namespace OHWebService.Authentication
             "/agents/",
             "/agents/contact",
             "/agents/contact/",
+            "/agents/upload",
+            "/agents/upload/",
             "/public",
             "/public/",
             "/public/search",
